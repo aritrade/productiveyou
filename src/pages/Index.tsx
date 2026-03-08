@@ -165,9 +165,10 @@ const Index = () => {
             </div>
             <div>
               <h1 className="text-lg font-heading font-bold tracking-tight text-gradient-amber">
-                LOCKDOWN
+                MONK MODE
               </h1>
               <p className="text-[10px] text-muted-foreground font-heading tracking-widest uppercase">
+                Activated
                 Productivity Tracker
               </p>
             </div>
