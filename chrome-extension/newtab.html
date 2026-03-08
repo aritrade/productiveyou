@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monk Mode — New Tab</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: hsl(240 10% 4%);
+      color: hsl(45 15% 90%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 40px;
+      padding: 40px;
+    }
+
+    .hero {
+      text-align: center;
+    }
+
+    .logo-big {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, hsl(38 95% 52%), hsl(32 80% 42%));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 20px;
+      box-shadow: 0 0 40px -10px hsla(38 95% 52% / 0.4);
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      background: linear-gradient(135deg, hsl(38 95% 52%), hsl(32 80% 42%));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .hero p {
+      font-size: 12px;
+      color: hsl(220 8% 42%);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 72px;
+      font-weight: 700;
+      color: hsl(45 15% 85%);
+      letter-spacing: -2px;
+    }
+
+    .date-text {
+      font-size: 16px;
+      color: hsl(220 8% 42%);
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 520px;
+      width: 100%;
+    }
+
+    .stat-card {
+      background: hsl(240 8% 7%);
+      border: 1px solid hsl(240 6% 14%);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .stat-value.amber { color: hsl(38 95% 52%); }
+    .stat-value.green { color: hsl(152 60% 42%); }
+    .stat-value.blue { color: hsl(210 70% 55%); }
+
+    .stat-label {
+      font-size: 10px;
+      color: hsl(220 8% 42%);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .quote-box {
+      max-width: 520px;
+      text-align: center;
+      padding: 20px 30px;
+      border-radius: 14px;
+      border: 1px solid hsla(260 50% 55% / 0.15);
+      background: hsla(260 50% 55% / 0.04);
+    }
+
+    .quote-text {
+      font-size: 15px;
+      font-style: italic;
+      color: hsl(45 15% 75%);
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .quote-author {
+      font-size: 11px;
+      color: hsl(260 50% 55%);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .open-link {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, hsl(38 95% 52%), hsl(32 80% 42%));
+      color: hsl(240 10% 4%);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .open-link:hover { opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="logo-big">⚡</div>
+    <h1>MONK MODE</h1>
+    <p>Activated</p>
+  </div>
+
+  <div>
+    <div class="time" id="clock">00:00</div>
+    <p class="date-text" id="dateText"></p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value amber" id="todayPct">0%</div>
+      <div class="stat-label">Today</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value green" id="streakDays">0</div>
+      <div class="stat-label">Day Streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value blue" id="totalPts">0</div>
+      <div class="stat-label">Points</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p class="quote-text" id="quoteText">"Discipline is the bridge between goals and accomplishment."</p>
+    <p class="quote-author" id="quoteAuthor">— Jim Rohn</p>
+  </div>
+
+  <a href="https://productiveneel.lovable.app" class="open-link">Open Full Dashboard →</a>
+
+  <script>
+    const QUOTES = [
+      { text: "Discipline is the bridge between goals and accomplishment.", author: "Jim Rohn" },
+      { text: "We suffer more often in imagination than in reality.", author: "Seneca" },
+      { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+      { text: "Small daily improvements over time lead to stunning results.", author: "Robin Sharma" },
+      { text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
+      { text: "What stands in the way becomes the way.", author: "Marcus Aurelius" },
+      { text: "Hard choices, easy life. Easy choices, hard life.", author: "Jerzy Gregorek" },
+      { text: "The impediment to action advances action. What stands in the way becomes the way.", author: "Marcus Aurelius" },
+    ];
+
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      document.getElementById("dateText").textContent = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Quote
+    const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    document.getElementById("quoteText").textContent = `"${q.text}"`;
+    document.getElementById("quoteAuthor").textContent = `— ${q.author}`;
+
+    // Stats
+    const TOTAL = 16;
+    function todayStr() { return new Date().toISOString().split("T")[0]; }
+
+    chrome.storage.local.get(["monkmode-nonneg", "monkmode-habits", "monkmode-history"], (data) => {
+      const nonNeg = data["monkmode-nonneg"] || {};
+      const habits = data["monkmode-habits"] || {};
+      const history = data["monkmode-history"] || [];
+
+      const pct = Math.round(((Object.values(nonNeg).filter(Boolean).length + Object.values(habits).filter(Boolean).length) / TOTAL) * 100);
+      document.getElementById("todayPct").textContent = `${pct}%`;
+
+      // Streak
+      const sorted = [...history].sort((a, b) => b.date.localeCompare(a.date));
+      let streak = 0;
+      const now = new Date();
+      for (let i = 0; i < 730; i++) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        const ds = d.toISOString().split("T")[0];
+        const rec = sorted.find((r) => r.date === ds);
+        if (rec && rec.percentage >= 90) streak++;
+        else if (i === 0) continue;
+        else break;
+      }
+      document.getElementById("streakDays").textContent = streak;
+
+      // Points
+      const allSorted = [...history].sort((a, b) => a.date.localeCompare(b.date));
+      let points = 0, run = 0;
+      for (const day of allSorted) {
+        if (day.percentage >= 90) { run++; if (run % 15 === 0) points += 100; }
+        else run = 0;
+      }
+      document.getElementById("totalPts").textContent = points;
+    });
+  </script>
+</body>
+</html>
