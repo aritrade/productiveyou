@@ -26,18 +26,14 @@ const JournalSection = ({ entries, onSave }: Props) => {
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
-
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
-
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        const url = URL.createObjectURL(blob);
-        setAudioUrl(url);
+        setAudioUrl(URL.createObjectURL(blob));
         stream.getTracks().forEach((t) => t.stop());
       };
-
       mediaRecorder.start();
       setIsRecording(true);
     } catch {
@@ -58,10 +54,12 @@ const JournalSection = ({ entries, onSave }: Props) => {
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6 card-glow">
+    <div className="card-section p-6">
       <div className="flex items-center gap-3 mb-5">
-        <BookOpen className="h-6 w-6 text-primary" />
-        <h2 className="text-lg font-heading font-semibold tracking-wide uppercase text-gradient">
+        <div className="w-8 h-8 rounded-lg bg-focus/15 flex items-center justify-center">
+          <BookOpen className="h-5 w-5 text-focus" />
+        </div>
+        <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-blue">
           Daily Journal
         </h2>
       </div>
@@ -71,7 +69,7 @@ const JournalSection = ({ entries, onSave }: Props) => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="How was your day? What did you learn? What are you grateful for?"
-          className="w-full h-28 rounded-lg border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+          className="input-field h-28 resize-none"
         />
 
         {audioUrl && (
@@ -81,20 +79,21 @@ const JournalSection = ({ entries, onSave }: Props) => {
         <div className="flex items-center gap-3">
           <button
             onClick={isRecording ? stopRecording : startRecording}
-            className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 ${
               isRecording
-                ? "bg-destructive text-destructive-foreground animate-pulse"
-                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                ? "btn-primary animate-pulse"
+                : "btn-secondary"
             }`}
+            style={isRecording ? { background: "hsl(0 78% 55%)" } : undefined}
           >
             {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-            {isRecording ? "Stop Recording" : "Record Audio"}
+            {isRecording ? "Stop" : "Record Audio"}
           </button>
 
           <button
             onClick={handleSave}
             disabled={!text.trim() && !audioUrl}
-            className="flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-primary flex items-center gap-2"
           >
             <Save className="h-4 w-4" />
             Save Entry
@@ -102,19 +101,14 @@ const JournalSection = ({ entries, onSave }: Props) => {
         </div>
 
         {entries.length > 0 && (
-          <div className="mt-4 space-y-3 max-h-60 overflow-y-auto pr-1">
+          <div className="mt-4 space-y-2.5 max-h-60 overflow-y-auto pr-1">
             {entries.map((entry) => (
-              <div
-                key={entry.id}
-                className="rounded-lg border border-border bg-muted/50 p-4"
-              >
-                <p className="text-xs text-muted-foreground mb-2 font-heading">
+              <div key={entry.id} className="rounded-lg border border-border bg-muted/40 p-4">
+                <p className="text-[10px] text-muted-foreground mb-2 font-heading tracking-wider uppercase">
                   {entry.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </p>
-                {entry.text && <p className="text-sm text-foreground">{entry.text}</p>}
-                {entry.audioUrl && (
-                  <audio controls src={entry.audioUrl} className="w-full h-8 mt-2" />
-                )}
+                {entry.text && <p className="text-sm text-foreground/85 leading-relaxed">{entry.text}</p>}
+                {entry.audioUrl && <audio controls src={entry.audioUrl} className="w-full h-8 mt-2" />}
               </div>
             ))}
           </div>

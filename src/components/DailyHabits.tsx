@@ -25,27 +25,36 @@ const DailyHabits = ({ checked, onChange }: Props) => {
   const percentage = Math.round((completed / HABITS.length) * 100);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6 card-glow">
+    <div className="card-section p-6">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <CheckSquare className="h-6 w-6 text-primary" />
-          <h2 className="text-lg font-heading font-semibold tracking-wide uppercase text-gradient">
+          <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+            <CheckSquare className="h-5 w-5 text-primary" />
+          </div>
+          <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber">
             Daily Habits
           </h2>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground font-heading">
             {completed}/{HABITS.length}
           </span>
-          <div className="w-20 h-2 rounded-full bg-secondary overflow-hidden">
+          <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
             <div
-              className="h-full rounded-full bg-primary transition-all duration-500"
-              style={{ width: `${percentage}%` }}
+              className={`h-full rounded-full transition-all duration-700 ease-out ${
+                percentage === 100 ? "progress-bar-glow" : ""
+              }`}
+              style={{
+                width: `${percentage}%`,
+                background: percentage === 100
+                  ? "linear-gradient(90deg, hsl(152 60% 42%), hsl(142 55% 50%))"
+                  : "linear-gradient(90deg, hsl(38 95% 52%), hsl(28 85% 58%))",
+              }}
             />
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
         {HABITS.map((habit) => {
           const isChecked = !!checked[habit.id];
           return (
@@ -53,8 +62,8 @@ const DailyHabits = ({ checked, onChange }: Props) => {
               key={habit.id}
               className={`flex items-center gap-3 rounded-lg px-4 py-3 cursor-pointer transition-all duration-200 border ${
                 isChecked
-                  ? "border-primary/30 bg-primary/5"
-                  : "border-transparent hover:border-border hover:bg-secondary/50"
+                  ? "border-primary/20 bg-primary/5"
+                  : "border-transparent hover:border-border/50 hover:bg-muted/50"
               }`}
             >
               <input
@@ -64,20 +73,20 @@ const DailyHabits = ({ checked, onChange }: Props) => {
                 className="sr-only"
               />
               <div
-                className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                className={`w-[18px] h-[18px] rounded border-2 flex items-center justify-center transition-all duration-200 ${
                   isChecked
-                    ? "border-primary bg-primary"
-                    : "border-muted-foreground/40"
+                    ? "border-primary bg-primary shadow-[0_0_6px_-1px_hsl(38_95%_52%/0.4)]"
+                    : "border-muted-foreground/30"
                 }`}
               >
                 {isChecked && (
-                  <svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <svg className="w-2.5 h-2.5 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
               </div>
-              <span className="text-lg">{habit.emoji}</span>
-              <span className={`text-sm font-medium ${isChecked ? "text-foreground" : "text-secondary-foreground"}`}>
+              <span className="text-base">{habit.emoji}</span>
+              <span className={`text-[13px] font-medium transition-colors ${isChecked ? "text-foreground" : "text-secondary-foreground"}`}>
                 {habit.label}
               </span>
             </label>

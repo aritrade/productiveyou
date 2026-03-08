@@ -16,9 +16,11 @@ const DailyQuote = () => {
   const index = (today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate()) % QUOTES.length;
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-primary/20 bg-primary/5 px-6 py-4">
-      <Flame className="h-5 w-5 text-primary shrink-0" />
-      <p className="text-sm text-foreground/80 italic">"{QUOTES[index]}"</p>
+    <div className="flex items-center gap-4 rounded-xl border border-wisdom/15 bg-wisdom/5 px-6 py-4">
+      <div className="w-8 h-8 rounded-full bg-wisdom/15 flex items-center justify-center shrink-0">
+        <Flame className="h-4 w-4 text-wisdom" />
+      </div>
+      <p className="text-sm text-foreground/70 italic leading-relaxed">"{QUOTES[index]}"</p>
     </div>
   );
 };
