@@ -6,53 +6,71 @@
 
 @layer base {
   :root {
-    --background: 220 20% 7%;
-    --foreground: 40 20% 92%;
+    /* Deep obsidian black — eliminates distraction, conveys power & focus */
+    --background: 240 10% 4%;
+    --foreground: 45 15% 90%;
 
-    --card: 220 18% 10%;
-    --card-foreground: 40 20% 92%;
+    /* Slightly lifted dark surface — depth without harshness */
+    --card: 240 8% 7%;
+    --card-foreground: 45 15% 90%;
 
-    --popover: 220 18% 10%;
-    --popover-foreground: 40 20% 92%;
+    --popover: 240 8% 7%;
+    --popover-foreground: 45 15% 90%;
 
-    --primary: 38 92% 50%;
-    --primary-foreground: 220 20% 7%;
+    /* Warm Amber — motivation, confidence, energy, optimism */
+    --primary: 38 95% 52%;
+    --primary-foreground: 240 10% 4%;
 
-    --secondary: 220 16% 16%;
-    --secondary-foreground: 40 15% 80%;
+    /* Charcoal elevated surface — subtle hierarchy */
+    --secondary: 240 6% 12%;
+    --secondary-foreground: 45 10% 72%;
 
-    --muted: 220 14% 14%;
-    --muted-foreground: 220 10% 50%;
+    /* Muted steel — calm, non-distracting secondary info */
+    --muted: 240 5% 10%;
+    --muted-foreground: 220 8% 42%;
 
-    --accent: 38 70% 40%;
-    --accent-foreground: 40 20% 95%;
+    /* Deep warm amber accent — determination, persistence */
+    --accent: 32 80% 42%;
+    --accent-foreground: 45 20% 95%;
 
-    --destructive: 0 72% 51%;
+    /* Crimson red — urgency, alertness for broken commitments */
+    --destructive: 0 78% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 60% 45%;
-    --success-foreground: 142 60% 15%;
+    /* Emerald green — growth, health, achievement, renewal */
+    --success: 152 60% 42%;
+    --success-foreground: 152 60% 92%;
 
-    --border: 220 14% 18%;
-    --input: 220 14% 18%;
-    --ring: 38 92% 50%;
+    /* Cool blue — calm focus, trust, mental clarity (journal) */
+    --focus: 210 70% 50%;
+    --focus-foreground: 210 70% 92%;
+
+    /* Warm purple — creativity, introspection (quotes) */
+    --wisdom: 270 40% 45%;
+    --wisdom-foreground: 270 40% 90%;
+
+    --border: 240 6% 14%;
+    --input: 240 6% 14%;
+    --ring: 38 95% 52%;
 
     --radius: 0.75rem;
 
     --font-heading: 'JetBrains Mono', monospace;
     --font-body: 'Inter', sans-serif;
 
-    --shadow-card: 0 4px 24px -4px hsla(0, 0%, 0%, 0.4);
-    --shadow-glow: 0 0 20px -4px hsla(38, 92%, 50%, 0.15);
+    --shadow-card: 0 4px 30px -6px hsla(0, 0%, 0%, 0.6);
+    --shadow-glow-amber: 0 0 30px -8px hsla(38, 95%, 52%, 0.12);
+    --shadow-glow-green: 0 0 20px -6px hsla(152, 60%, 42%, 0.15);
+    --shadow-glow-red: 0 0 20px -6px hsla(0, 78%, 55%, 0.12);
 
-    --sidebar-background: 220 18% 10%;
-    --sidebar-foreground: 40 20% 92%;
-    --sidebar-primary: 38 92% 50%;
-    --sidebar-primary-foreground: 220 20% 7%;
-    --sidebar-accent: 220 16% 16%;
-    --sidebar-accent-foreground: 40 15% 80%;
-    --sidebar-border: 220 14% 18%;
-    --sidebar-ring: 38 92% 50%;
+    --sidebar-background: 240 8% 7%;
+    --sidebar-foreground: 45 15% 90%;
+    --sidebar-primary: 38 95% 52%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 6% 12%;
+    --sidebar-accent-foreground: 45 10% 72%;
+    --sidebar-border: 240 6% 14%;
+    --sidebar-ring: 38 95% 52%;
   }
 }
 
@@ -72,23 +90,96 @@
 }
 
 @layer components {
-  .card-glow {
+  .card-section {
     box-shadow: var(--shadow-card);
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.4s ease, border-color 0.4s ease;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    border-radius: var(--radius);
   }
-  .card-glow:hover {
-    box-shadow: var(--shadow-glow);
+  .card-section:hover {
+    box-shadow: var(--shadow-glow-amber);
+    border-color: hsl(var(--primary) / 0.15);
+  }
+
+  .card-success-glow:hover {
+    box-shadow: var(--shadow-glow-green);
+    border-color: hsl(var(--success) / 0.2);
+  }
+
+  .card-danger-glow:hover {
+    box-shadow: var(--shadow-glow-red);
+    border-color: hsl(var(--destructive) / 0.2);
+  }
+
+  .btn-primary {
+    @apply rounded-lg px-4 py-2.5 text-sm font-semibold transition-all;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    color: hsl(var(--primary-foreground));
+  }
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 0 16px -4px hsl(var(--primary) / 0.4);
+  }
+  .btn-primary:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    filter: none;
+    box-shadow: none;
+  }
+
+  .btn-secondary {
+    @apply rounded-lg px-4 py-2.5 text-sm font-medium transition-all;
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+  }
+  .btn-secondary:hover {
+    background: hsl(var(--secondary) / 0.8);
+    border-color: hsl(var(--border));
+  }
+
+  .input-field {
+    @apply w-full rounded-lg border px-4 py-2.5 text-sm transition-all;
+    background: hsl(var(--muted));
+    border-color: hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+  .input-field::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.08);
   }
 }
 
 @layer utilities {
-  .text-gradient {
+  .text-gradient-amber {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(38 92% 50%), hsl(28 90% 60%));
+    background-image: linear-gradient(135deg, hsl(38 95% 52%), hsl(28 85% 58%));
+  }
+  .text-gradient-green {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(152 60% 42%), hsl(142 55% 50%));
+  }
+  .text-gradient-blue {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(210 70% 50%), hsl(200 65% 58%));
+  }
+  .text-gradient-wisdom {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(270 40% 55%), hsl(38 90% 55%));
   }
   .line-through-done {
     text-decoration: line-through;
-    text-decoration-color: hsl(var(--primary) / 0.6);
+    text-decoration-color: hsl(var(--success) / 0.6);
     text-decoration-thickness: 2px;
+  }
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+  .progress-bar-glow {
+    box-shadow: 0 0 8px -2px hsl(var(--primary) / 0.5);
   }
 }
