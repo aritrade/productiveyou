@@ -155,6 +155,15 @@ const Index = () => {
   const deleteTodo = useCallback((id: string) =>
     setTodos((prev) => prev.filter((t) => t.id !== id)), []);
 
+  const resetStreak = useCallback(() => {
+    setHistory([]);
+    setNonNegotiables({});
+    setHabits({});
+    localStorage.removeItem("lockdown-history");
+    localStorage.removeItem("lockdown-nonneg");
+    localStorage.removeItem("lockdown-habits");
+  }, []);
+
   return (
     <div className="min-h-screen bg-background bg-noise">
       <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10">
