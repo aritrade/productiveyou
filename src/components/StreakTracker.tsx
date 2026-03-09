@@ -1,5 +1,16 @@
 import { useState, useMemo } from "react";
-import { Trophy, Flame, Star, TrendingUp } from "lucide-react";
+import { Trophy, Flame, Star, TrendingUp, RotateCcw } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface DayRecord {
   date: string; // YYYY-MM-DD
@@ -11,12 +22,13 @@ interface Props {
   currentStreak: number;
   longestStreak: number;
   totalPoints: number;
+  onReset?: () => void;
 }
 
 const TOTAL_DAYS = 730; // 2 years
 const COLS = 52; // weeks per row roughly
 
-const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints }: Props) => {
+const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, onReset }: Props) => {
   const [hoveredDay, setHoveredDay] = useState<DayRecord | null>(null);
 
   const grid = useMemo(() => {
@@ -67,6 +79,30 @@ const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints }: P
             2-Year Consistency
           </h2>
         </div>
+        {onReset && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button className="flex items-center gap-1.5 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-destructive hover:bg-destructive/20 transition-colors">
+                <RotateCcw className="h-3 w-3" />
+                Reset
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset All Progress?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently erase your entire 2-year streak history, points, and milestones. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={onReset} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Yes, Reset Everything
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </div>
 
       {/* Stats row */}
