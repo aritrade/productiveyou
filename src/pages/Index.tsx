@@ -30,6 +30,7 @@ const NON_NEG_COUNT = 4;
 const HABIT_COUNT = 12;
 const TOTAL_ITEMS = NON_NEG_COUNT + HABIT_COUNT; // 16 trackable items
 
+const STREAK_START_DATE = "2025-03-16";
 const todayStr = () => new Date().toISOString().split("T")[0];
 
 const loadJSON = <T,>(key: string, fallback: T): T => {
@@ -53,9 +54,10 @@ const Index = () => {
     return saved.map((e) => ({ ...e, timestamp: new Date(e.timestamp) }));
   });
   const [todos, setTodos] = useState<Todo[]>(() => loadJSON("lockdown-todos", []));
-  const [history, setHistory] = useState<DayRecord[]>(
-    () => loadJSON("lockdown-history", [])
-  );
+  const [history, setHistory] = useState<DayRecord[]>(() => {
+    const saved = loadJSON<DayRecord[]>("lockdown-history", []);
+    return saved.filter((d) => d.date >= STREAK_START_DATE);
+  });
 
   // Persist state
   useEffect(() => { localStorage.setItem("lockdown-nonneg", JSON.stringify(nonNegotiables)); }, [nonNegotiables]);
@@ -199,6 +201,7 @@ const Index = () => {
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           totalPoints={totalPoints}
+          onReset={resetStreak}
         />
         <NonNegotiables checked={nonNegotiables} onChange={toggleNonNeg} />
         <DailyHabits checked={habits} onChange={toggleHabit} />
