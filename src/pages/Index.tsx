@@ -1,12 +1,22 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import NonNegotiables from "@/components/NonNegotiables";
 import DailyHabits from "@/components/DailyHabits";
 import JournalSection from "@/components/JournalSection";
 import TodoList from "@/components/TodoList";
 import DailyQuote from "@/components/DailyQuote";
 import StreakTracker from "@/components/StreakTracker";
-import { Zap } from "lucide-react";
+import { Zap, History } from "lucide-react";
+import { useMidnightReset } from "@/hooks/useMidnightReset";
+import {
+  getISTDateString,
+  upsertDailyEntry,
+  fetchDailyEntry,
+  fetchAllEntries,
+  deleteAllEntries,
+  type DailyEntry,
+} from "@/lib/dailyEntries";
 
 interface JournalEntry {
   id: string;
@@ -28,63 +38,108 @@ interface DayRecord {
 
 const NON_NEG_COUNT = 4;
 const HABIT_COUNT = 12;
-const TOTAL_ITEMS = NON_NEG_COUNT + HABIT_COUNT; // 16 trackable items
-
+const TOTAL_ITEMS = NON_NEG_COUNT + HABIT_COUNT;
 const STREAK_START_DATE = "2025-03-16";
-const todayStr = () => new Date().toISOString().split("T")[0];
-
-const loadJSON = <T,>(key: string, fallback: T): T => {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
-};
 
 const Index = () => {
-  const [nonNegotiables, setNonNegotiables] = useState<Record<string, boolean>>(
-    () => loadJSON("lockdown-nonneg", {})
-  );
-  const [habits, setHabits] = useState<Record<string, boolean>>(
-    () => loadJSON("lockdown-habits", {})
-  );
-  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>(() => {
-    const saved = loadJSON<Array<JournalEntry & { timestamp: string }>>("lockdown-journal", []);
-    return saved.map((e) => ({ ...e, timestamp: new Date(e.timestamp) }));
-  });
-  const [todos, setTodos] = useState<Todo[]>(() => loadJSON("lockdown-todos", []));
-  const [history, setHistory] = useState<DayRecord[]>(() => {
-    const saved = loadJSON<DayRecord[]>("lockdown-history", []);
-    return saved.filter((d) => d.date >= STREAK_START_DATE);
-  });
+  const navigate = useNavigate();
+  const [nonNegotiables, setNonNegotiables] = useState<Record<string, boolean>>({});
+  const [habits, setHabits] = useState<Record<string, boolean>>({});
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [history, setHistory] = useState<DayRecord[]>([]);
+  const [todayDate, setTodayDate] = useState(getISTDateString());
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isInitialLoad = useRef(true);
 
-  // Persist state
-  useEffect(() => { localStorage.setItem("lockdown-nonneg", JSON.stringify(nonNegotiables)); }, [nonNegotiables]);
-  useEffect(() => { localStorage.setItem("lockdown-habits", JSON.stringify(habits)); }, [habits]);
-  useEffect(() => { localStorage.setItem("lockdown-journal", JSON.stringify(journalEntries)); }, [journalEntries]);
-  useEffect(() => { localStorage.setItem("lockdown-todos", JSON.stringify(todos)); }, [todos]);
-  useEffect(() => { localStorage.setItem("lockdown-history", JSON.stringify(history)); }, [history]);
+  // Load today's data from DB on mount
+  useEffect(() => {
+    const load = async () => {
+      const today = getISTDateString();
+      setTodayDate(today);
 
-  // Calculate today's completion and sync to history
+      // Load today's entry
+      const entry = await fetchDailyEntry(today);
+      if (entry) {
+        setNonNegotiables(entry.non_negotiables);
+        setHabits(entry.habits);
+        setJournalEntries(
+          entry.journal_entries.map((j) => ({
+            ...j,
+            timestamp: new Date(j.timestamp),
+          }))
+        );
+        setTodos(entry.todos);
+      }
+
+      // Load all history for streak
+      const allEntries = await fetchAllEntries();
+      setHistory(
+        allEntries
+          .filter((e) => e.entry_date >= STREAK_START_DATE)
+          .map((e) => ({ date: e.entry_date, percentage: e.percentage }))
+      );
+
+      isInitialLoad.current = false;
+    };
+    load();
+  }, []);
+
+  // Calculate today's completion
   const todayPercentage = useMemo(() => {
     const nonNegCount = Object.values(nonNegotiables).filter(Boolean).length;
     const habitCount = Object.values(habits).filter(Boolean).length;
     return Math.round(((nonNegCount + habitCount) / TOTAL_ITEMS) * 100);
   }, [nonNegotiables, habits]);
 
+  // Debounced save to Supabase
   useEffect(() => {
-    const today = todayStr();
-    setHistory((prev) => {
-      const existing = prev.findIndex((d) => d.date === today);
-      if (existing >= 0) {
-        const updated = [...prev];
-        updated[existing] = { date: today, percentage: todayPercentage };
-        return updated;
-      }
-      return [...prev, { date: today, percentage: todayPercentage }];
-    });
-  }, [todayPercentage]);
+    if (isInitialLoad.current) return;
+
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      upsertDailyEntry({
+        entry_date: todayDate,
+        non_negotiables: nonNegotiables,
+        habits,
+        journal_entries: journalEntries.map((j) => ({
+          id: j.id,
+          text: j.text,
+          audioUrl: j.audioUrl,
+          timestamp: j.timestamp.toISOString(),
+        })),
+        todos,
+        percentage: todayPercentage,
+      });
+
+      // Update history for today
+      setHistory((prev) => {
+        const existing = prev.findIndex((d) => d.date === todayDate);
+        if (existing >= 0) {
+          const updated = [...prev];
+          updated[existing] = { date: todayDate, percentage: todayPercentage };
+          return updated;
+        }
+        return [...prev, { date: todayDate, percentage: todayPercentage }];
+      });
+    }, 1000);
+
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [nonNegotiables, habits, journalEntries, todos, todayPercentage, todayDate]);
+
+  // Midnight IST reset
+  useMidnightReset(
+    useCallback((newDate: string) => {
+      // Reset state for the new day
+      setNonNegotiables({});
+      setHabits({});
+      setJournalEntries([]);
+      setTodos([]);
+      setTodayDate(newDate);
+    }, [])
+  );
 
   // Streak calculations
   const { currentStreak, longestStreak, totalPoints } = useMemo(() => {
@@ -93,7 +148,6 @@ const Index = () => {
     let longest = 0;
     let tempStreak = 0;
 
-    // Current streak: count consecutive days ≥90% from today backwards
     const today = new Date();
     for (let i = 0; i < 730; i++) {
       const d = new Date(today);
@@ -103,17 +157,15 @@ const Index = () => {
       if (record && record.percentage >= 90) {
         current++;
       } else if (i === 0) {
-        // today hasn't hit 90% yet, that's ok, don't break
         continue;
       } else {
         break;
       }
     }
 
-    // Longest streak
     const allSorted = [...history].sort((a, b) => a.date.localeCompare(b.date));
-    for (let i = 0; i < allSorted.length; i++) {
-      if (allSorted[i].percentage >= 90) {
+    for (const entry of allSorted) {
+      if (entry.percentage >= 90) {
         tempStreak++;
         longest = Math.max(longest, tempStreak);
       } else {
@@ -121,16 +173,12 @@ const Index = () => {
       }
     }
 
-    // Points: 100 per every 15 consecutive days in longest continuous streaks
-    // We sum all complete 15-day blocks from all streaks
     let points = 0;
     let runningStreak = 0;
-    for (let i = 0; i < allSorted.length; i++) {
-      if (allSorted[i].percentage >= 90) {
+    for (const entry of allSorted) {
+      if (entry.percentage >= 90) {
         runningStreak++;
-        if (runningStreak > 0 && runningStreak % 15 === 0) {
-          points += 100;
-        }
+        if (runningStreak % 15 === 0) points += 100;
       } else {
         runningStreak = 0;
       }
@@ -155,13 +203,13 @@ const Index = () => {
   const deleteTodo = useCallback((id: string) =>
     setTodos((prev) => prev.filter((t) => t.id !== id)), []);
 
-  const resetStreak = useCallback(() => {
+  const resetStreak = useCallback(async () => {
+    await deleteAllEntries();
     setHistory([]);
     setNonNegotiables({});
     setHabits({});
-    localStorage.removeItem("lockdown-history");
-    localStorage.removeItem("lockdown-nonneg");
-    localStorage.removeItem("lockdown-habits");
+    setJournalEntries([]);
+    setTodos([]);
   }, []);
 
   return (
@@ -179,19 +227,25 @@ const Index = () => {
                 MONK MODE
               </h1>
               <p className="text-[10px] text-muted-foreground font-heading tracking-widest uppercase">
-                Activated
-                Productivity Tracker
+                Activated Productivity Tracker
               </p>
             </div>
           </div>
           <div className="text-right flex items-center gap-4">
+            <button
+              onClick={() => navigate("/history")}
+              className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
+            >
+              <History className="h-3 w-3" />
+              History
+            </button>
             <div className="hidden sm:flex items-center gap-2 rounded-lg bg-primary/10 border border-primary/20 px-3 py-1.5">
               <span className="text-[10px] font-heading text-muted-foreground tracking-wider uppercase">Today</span>
               <span className={`text-sm font-heading font-bold ${todayPercentage >= 90 ? "text-success" : "text-primary"}`}>
                 {todayPercentage}%
               </span>
             </div>
-            <div>
+            <div className="hidden sm:block">
               <p className="text-sm font-heading font-semibold text-foreground">
                 {format(new Date(), "EEEE")}
               </p>
