@@ -16,7 +16,6 @@ import {
   fetchDailyEntry,
   fetchAllEntries,
   deleteAllEntries,
-  type DailyEntry,
 } from "@/lib/dailyEntries";
 
 interface JournalEntry {

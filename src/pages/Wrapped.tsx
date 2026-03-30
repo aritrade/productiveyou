@@ -58,13 +58,16 @@ const Wrapped = () => {
     return { from: format(start, "yyyy-MM-dd"), to: format(end, "yyyy-MM-dd"), label: format(todayDate, "MMMM yyyy") };
   }, [period]);
 
+  const { user } = useAuth();
+
   useEffect(() => {
+    if (!user) return;
     setLoading(true);
-    fetchEntriesRange(dateRange.from, dateRange.to).then((data) => {
+    fetchEntriesRange(dateRange.from, dateRange.to, user.id).then((data) => {
       setEntries(data);
       setLoading(false);
     });
-  }, [dateRange]);
+  }, [dateRange, user]);
 
   // Stats
   const stats = useMemo(() => {

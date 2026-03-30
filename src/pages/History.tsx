@@ -82,10 +82,10 @@ const History = () => {
   };
 
   const handleDownloadPDF = async () => {
-    if (!pdfFrom || !pdfTo) return;
+    if (!pdfFrom || !pdfTo || !user) return;
     const from = format(pdfFrom, "yyyy-MM-dd");
     const to = format(pdfTo, "yyyy-MM-dd");
-    const rangeEntries = await fetchEntriesRange(from, to);
+    const rangeEntries = await fetchEntriesRange(from, to, user.id);
     generateProgressPDF(rangeEntries, from, to, reportType);
   };
 
