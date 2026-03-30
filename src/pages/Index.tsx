@@ -7,7 +7,7 @@ import JournalSection from "@/components/JournalSection";
 import TodoList from "@/components/TodoList";
 import DailyQuote from "@/components/DailyQuote";
 import StreakTracker from "@/components/StreakTracker";
-import { Zap, History } from "lucide-react";
+import { Zap, History, Sparkles } from "lucide-react";
 import { useMidnightReset } from "@/hooks/useMidnightReset";
 import {
   getISTDateString,
@@ -22,6 +22,7 @@ interface JournalEntry {
   id: string;
   text: string;
   audioUrl?: string;
+  photos?: { url: string; caption: string }[];
   timestamp: Date;
 }
 
@@ -64,8 +65,9 @@ const Index = () => {
         setNonNegotiables(entry.non_negotiables);
         setHabits(entry.habits);
         setJournalEntries(
-          entry.journal_entries.map((j) => ({
+          entry.journal_entries.map((j: any) => ({
             ...j,
+            photos: j.photos || [],
             timestamp: new Date(j.timestamp),
           }))
         );
@@ -106,6 +108,7 @@ const Index = () => {
           id: j.id,
           text: j.text,
           audioUrl: j.audioUrl,
+          photos: j.photos,
           timestamp: j.timestamp.toISOString(),
         })),
         todos,
@@ -191,7 +194,7 @@ const Index = () => {
     setNonNegotiables((prev) => ({ ...prev, [id]: !prev[id] })), []);
   const toggleHabit = useCallback((id: string) =>
     setHabits((prev) => ({ ...prev, [id]: !prev[id] })), []);
-  const saveJournal = useCallback((entry: { text: string; audioUrl?: string }) =>
+  const saveJournal = useCallback((entry: { text: string; audioUrl?: string; photos?: { url: string; caption: string }[] }) =>
     setJournalEntries((prev) => [
       { ...entry, id: crypto.randomUUID(), timestamp: new Date() },
       ...prev,
@@ -232,6 +235,13 @@ const Index = () => {
             </div>
           </div>
           <div className="text-right flex items-center gap-4">
+            <button
+              onClick={() => navigate("/wrapped")}
+              className="flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-primary hover:bg-primary/20 transition-colors"
+            >
+              <Sparkles className="h-3 w-3" />
+              Wrapped
+            </button>
             <button
               onClick={() => navigate("/history")}
               className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
