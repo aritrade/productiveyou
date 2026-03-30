@@ -7,7 +7,7 @@ import JournalSection from "@/components/JournalSection";
 import TodoList from "@/components/TodoList";
 import DailyQuote from "@/components/DailyQuote";
 import StreakTracker from "@/components/StreakTracker";
-import { Zap, History } from "lucide-react";
+import { Zap, History, Sparkles } from "lucide-react";
 import { useMidnightReset } from "@/hooks/useMidnightReset";
 import {
   getISTDateString,
