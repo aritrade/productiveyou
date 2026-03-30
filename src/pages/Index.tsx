@@ -194,7 +194,7 @@ const Index = () => {
     setNonNegotiables((prev) => ({ ...prev, [id]: !prev[id] })), []);
   const toggleHabit = useCallback((id: string) =>
     setHabits((prev) => ({ ...prev, [id]: !prev[id] })), []);
-  const saveJournal = useCallback((entry: { text: string; audioUrl?: string }) =>
+  const saveJournal = useCallback((entry: { text: string; audioUrl?: string; photos?: { url: string; caption: string }[] }) =>
     setJournalEntries((prev) => [
       { ...entry, id: crypto.randomUUID(), timestamp: new Date() },
       ...prev,
