@@ -31,10 +31,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const OnboardingRoute = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/auth" replace />;
-  if (profile?.onboarding_completed) return <Navigate to="/" replace />;
   return <Onboarding />;
 };
 
