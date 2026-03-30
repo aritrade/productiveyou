@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Share2, Download, Sparkles, Flame, Trophy, BookOpen, CheckSquare, Camera } from "lucide-react";
 import { format, subDays, subWeeks, subMonths, startOfWeek, startOfMonth, endOfWeek, endOfMonth } from "date-fns";
+import { useAuth } from "@/hooks/useAuth";
 import { fetchEntriesRange, getISTDateString, type DailyEntry } from "@/lib/dailyEntries";
 import html2canvas from "html2canvas";
 
@@ -57,13 +58,16 @@ const Wrapped = () => {
     return { from: format(start, "yyyy-MM-dd"), to: format(end, "yyyy-MM-dd"), label: format(todayDate, "MMMM yyyy") };
   }, [period]);
 
+  const { user } = useAuth();
+
   useEffect(() => {
+    if (!user) return;
     setLoading(true);
-    fetchEntriesRange(dateRange.from, dateRange.to).then((data) => {
+    fetchEntriesRange(dateRange.from, dateRange.to, user.id).then((data) => {
       setEntries(data);
       setLoading(false);
     });
-  }, [dateRange]);
+  }, [dateRange, user]);
 
   // Stats
   const stats = useMemo(() => {

@@ -1,28 +1,20 @@
 import { CheckSquare } from "lucide-react";
 
-const HABITS = [
-  { id: "wake-up", label: "Wake Up on Time", emoji: "⏰" },
-  { id: "bed-time", label: "Bed Time on Schedule", emoji: "🌙" },
-  { id: "water", label: "Water Intake (3L+)", emoji: "💧" },
-  { id: "exercise", label: "Exercise & Movement", emoji: "🏋️" },
-  { id: "diet", label: "Diet & Protein Intake", emoji: "🥗" },
-  { id: "deep-work", label: "Deep Work Time", emoji: "🎯" },
-  { id: "journal", label: "Journal Time", emoji: "📝" },
-  { id: "reading", label: "Reading Time", emoji: "📚" },
-  { id: "music", label: "Music Practice", emoji: "🎵" },
-  { id: "finance", label: "Financial & Business Literacy", emoji: "📈" },
-  { id: "meditation", label: "Meditation / Mindfulness", emoji: "🧘" },
-  { id: "cold-shower", label: "Cold Shower", emoji: "🚿" },
-];
+interface Habit {
+  id: string;
+  label: string;
+  emoji: string;
+}
 
 interface Props {
+  habits: Habit[];
   checked: Record<string, boolean>;
   onChange: (id: string) => void;
 }
 
-const DailyHabits = ({ checked, onChange }: Props) => {
-  const completed = HABITS.filter((h) => checked[h.id]).length;
-  const percentage = Math.round((completed / HABITS.length) * 100);
+const DailyHabits = ({ habits, checked, onChange }: Props) => {
+  const completed = habits.filter((h) => checked[h.id]).length;
+  const percentage = habits.length > 0 ? Math.round((completed / habits.length) * 100) : 0;
 
   return (
     <div className="card-section p-6">
@@ -37,7 +29,7 @@ const DailyHabits = ({ checked, onChange }: Props) => {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground font-heading">
-            {completed}/{HABITS.length}
+            {completed}/{habits.length}
           </span>
           <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
             <div
@@ -55,7 +47,7 @@ const DailyHabits = ({ checked, onChange }: Props) => {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
-        {HABITS.map((habit) => {
+        {habits.map((habit) => {
           const isChecked = !!checked[habit.id];
           return (
             <label

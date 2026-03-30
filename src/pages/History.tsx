@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, subMonths, addMonths } from "date-fns";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Download, FileText, BarChart3, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { fetchAllEntries, fetchEntriesRange, type DailyEntry } from "@/lib/dailyEntries";
 import { generateProgressPDF } from "@/lib/generatePDF";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -43,15 +44,18 @@ const History = () => {
   const [pdfTo, setPdfTo] = useState<Date | undefined>(new Date());
   const [reportType, setReportType] = useState<"summary" | "detailed">("summary");
 
+  const { user } = useAuth();
+
   useEffect(() => {
+    if (!user) return;
     const load = async () => {
       setLoading(true);
-      const data = await fetchAllEntries();
+      const data = await fetchAllEntries(user.id);
       setEntries(data);
       setLoading(false);
     };
     load();
-  }, []);
+  }, [user]);
 
   const entryMap = useMemo(() => {
     const map: Record<string, DailyEntry> = {};
@@ -78,10 +82,10 @@ const History = () => {
   };
 
   const handleDownloadPDF = async () => {
-    if (!pdfFrom || !pdfTo) return;
+    if (!pdfFrom || !pdfTo || !user) return;
     const from = format(pdfFrom, "yyyy-MM-dd");
     const to = format(pdfTo, "yyyy-MM-dd");
-    const rangeEntries = await fetchEntriesRange(from, to);
+    const rangeEntries = await fetchEntriesRange(from, to, user.id);
     generateProgressPDF(rangeEntries, from, to, reportType);
   };
 

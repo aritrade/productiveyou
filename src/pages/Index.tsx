@@ -1,13 +1,14 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import NonNegotiables from "@/components/NonNegotiables";
 import DailyHabits from "@/components/DailyHabits";
 import JournalSection from "@/components/JournalSection";
 import TodoList from "@/components/TodoList";
 import DailyQuote from "@/components/DailyQuote";
 import StreakTracker from "@/components/StreakTracker";
-import { Zap, History, Sparkles } from "lucide-react";
+import { Zap, History, Sparkles, LogOut, Settings } from "lucide-react";
 import { useMidnightReset } from "@/hooks/useMidnightReset";
 import {
   getISTDateString,
@@ -15,7 +16,6 @@ import {
   fetchDailyEntry,
   fetchAllEntries,
   deleteAllEntries,
-  type DailyEntry,
 } from "@/lib/dailyEntries";
 
 interface JournalEntry {
@@ -37,13 +37,9 @@ interface DayRecord {
   percentage: number;
 }
 
-const NON_NEG_COUNT = 4;
-const HABIT_COUNT = 12;
-const TOTAL_ITEMS = NON_NEG_COUNT + HABIT_COUNT;
-const STREAK_START_DATE = "2025-03-16";
-
 const Index = () => {
   const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
   const [nonNegotiables, setNonNegotiables] = useState<Record<string, boolean>>({});
   const [habits, setHabits] = useState<Record<string, boolean>>({});
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
@@ -53,14 +49,19 @@ const Index = () => {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isInitialLoad = useRef(true);
 
+  const userRules = useMemo(() => profile?.custom_non_negotiables ?? [], [profile]);
+  const userHabits = useMemo(() => profile?.custom_habits ?? [], [profile]);
+  const totalItems = userRules.length + userHabits.length;
+  const streakStartDate = profile?.streak_start_date ?? getISTDateString();
+
   // Load today's data from DB on mount
   useEffect(() => {
+    if (!user) return;
     const load = async () => {
       const today = getISTDateString();
       setTodayDate(today);
 
-      // Load today's entry
-      const entry = await fetchDailyEntry(today);
+      const entry = await fetchDailyEntry(today, user.id);
       if (entry) {
         setNonNegotiables(entry.non_negotiables);
         setHabits(entry.habits);
@@ -74,48 +75,50 @@ const Index = () => {
         setTodos(entry.todos);
       }
 
-      // Load all history for streak
-      const allEntries = await fetchAllEntries();
+      const allEntries = await fetchAllEntries(user.id);
       setHistory(
         allEntries
-          .filter((e) => e.entry_date >= STREAK_START_DATE)
+          .filter((e) => e.entry_date >= streakStartDate)
           .map((e) => ({ date: e.entry_date, percentage: e.percentage }))
       );
 
       isInitialLoad.current = false;
     };
     load();
-  }, []);
+  }, [user, streakStartDate]);
 
   // Calculate today's completion
   const todayPercentage = useMemo(() => {
+    if (totalItems === 0) return 0;
     const nonNegCount = Object.values(nonNegotiables).filter(Boolean).length;
     const habitCount = Object.values(habits).filter(Boolean).length;
-    return Math.round(((nonNegCount + habitCount) / TOTAL_ITEMS) * 100);
-  }, [nonNegotiables, habits]);
+    return Math.round(((nonNegCount + habitCount) / totalItems) * 100);
+  }, [nonNegotiables, habits, totalItems]);
 
-  // Debounced save to Supabase
+  // Debounced save
   useEffect(() => {
-    if (isInitialLoad.current) return;
+    if (isInitialLoad.current || !user) return;
 
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
-      upsertDailyEntry({
-        entry_date: todayDate,
-        non_negotiables: nonNegotiables,
-        habits,
-        journal_entries: journalEntries.map((j) => ({
-          id: j.id,
-          text: j.text,
-          audioUrl: j.audioUrl,
-          photos: j.photos,
-          timestamp: j.timestamp.toISOString(),
-        })),
-        todos,
-        percentage: todayPercentage,
-      });
+      upsertDailyEntry(
+        {
+          entry_date: todayDate,
+          non_negotiables: nonNegotiables,
+          habits,
+          journal_entries: journalEntries.map((j) => ({
+            id: j.id,
+            text: j.text,
+            audioUrl: j.audioUrl,
+            photos: j.photos,
+            timestamp: j.timestamp.toISOString(),
+          })),
+          todos,
+          percentage: todayPercentage,
+        },
+        user.id
+      );
 
-      // Update history for today
       setHistory((prev) => {
         const existing = prev.findIndex((d) => d.date === todayDate);
         if (existing >= 0) {
@@ -130,12 +133,11 @@ const Index = () => {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
-  }, [nonNegotiables, habits, journalEntries, todos, todayPercentage, todayDate]);
+  }, [nonNegotiables, habits, journalEntries, todos, todayPercentage, todayDate, user]);
 
   // Midnight IST reset
   useMidnightReset(
     useCallback((newDate: string) => {
-      // Reset state for the new day
       setNonNegotiables({});
       setHabits({});
       setJournalEntries([]);
@@ -148,8 +150,6 @@ const Index = () => {
   const { currentStreak, longestStreak, totalPoints } = useMemo(() => {
     const sorted = [...history].sort((a, b) => b.date.localeCompare(a.date));
     let current = 0;
-    let longest = 0;
-    let tempStreak = 0;
 
     const today = new Date();
     for (let i = 0; i < 730; i++) {
@@ -166,6 +166,8 @@ const Index = () => {
       }
     }
 
+    let longest = 0;
+    let tempStreak = 0;
     const allSorted = [...history].sort((a, b) => a.date.localeCompare(b.date));
     for (const entry of allSorted) {
       if (entry.percentage >= 90) {
@@ -207,13 +209,14 @@ const Index = () => {
     setTodos((prev) => prev.filter((t) => t.id !== id)), []);
 
   const resetStreak = useCallback(async () => {
-    await deleteAllEntries();
+    if (!user) return;
+    await deleteAllEntries(user.id);
     setHistory([]);
     setNonNegotiables({});
     setHabits({});
     setJournalEntries([]);
     setTodos([]);
-  }, []);
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-background bg-noise">
@@ -230,24 +233,31 @@ const Index = () => {
                 MONK MODE
               </h1>
               <p className="text-[10px] text-muted-foreground font-heading tracking-widest uppercase">
-                Activated Productivity Tracker
+                {profile?.display_name || "Activated Productivity Tracker"}
               </p>
             </div>
           </div>
-          <div className="text-right flex items-center gap-4">
+          <div className="text-right flex items-center gap-2 sm:gap-4">
             <button
               onClick={() => navigate("/wrapped")}
               className="flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-primary hover:bg-primary/20 transition-colors"
             >
               <Sparkles className="h-3 w-3" />
-              Wrapped
+              <span className="hidden sm:inline">Wrapped</span>
             </button>
             <button
               onClick={() => navigate("/history")}
               className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
             >
               <History className="h-3 w-3" />
-              History
+              <span className="hidden sm:inline">History</span>
+            </button>
+            <button
+              onClick={() => navigate("/onboarding")}
+              className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-2 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
+              title="Settings"
+            >
+              <Settings className="h-3 w-3" />
             </button>
             <div className="hidden sm:flex items-center gap-2 rounded-lg bg-primary/10 border border-primary/20 px-3 py-1.5">
               <span className="text-[10px] font-heading text-muted-foreground tracking-wider uppercase">Today</span>
@@ -263,6 +273,13 @@ const Index = () => {
                 {format(new Date(), "MMM d, yyyy")}
               </p>
             </div>
+            <button
+              onClick={signOut}
+              className="flex items-center gap-1 rounded-lg border border-border bg-secondary px-2 py-1.5 text-[10px] font-heading text-secondary-foreground hover:bg-destructive/20 hover:text-destructive hover:border-destructive/30 transition-colors"
+              title="Sign out"
+            >
+              <LogOut className="h-3 w-3" />
+            </button>
           </div>
         </div>
       </header>
@@ -276,8 +293,8 @@ const Index = () => {
           totalPoints={totalPoints}
           onReset={resetStreak}
         />
-        <NonNegotiables checked={nonNegotiables} onChange={toggleNonNeg} />
-        <DailyHabits checked={habits} onChange={toggleHabit} />
+        <NonNegotiables rules={userRules} checked={nonNegotiables} onChange={toggleNonNeg} />
+        <DailyHabits habits={userHabits} checked={habits} onChange={toggleHabit} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <JournalSection entries={journalEntries} onSave={saveJournal} />
           <TodoList todos={todos} onAdd={addTodo} onToggle={toggleTodo} onDelete={deleteTodo} />
