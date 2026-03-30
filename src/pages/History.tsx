@@ -44,15 +44,18 @@ const History = () => {
   const [pdfTo, setPdfTo] = useState<Date | undefined>(new Date());
   const [reportType, setReportType] = useState<"summary" | "detailed">("summary");
 
+  const { user } = useAuth();
+
   useEffect(() => {
+    if (!user) return;
     const load = async () => {
       setLoading(true);
-      const data = await fetchAllEntries();
+      const data = await fetchAllEntries(user.id);
       setEntries(data);
       setLoading(false);
     };
     load();
-  }, []);
+  }, [user]);
 
   const entryMap = useMemo(() => {
     const map: Record<string, DailyEntry> = {};
