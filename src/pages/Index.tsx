@@ -65,8 +65,9 @@ const Index = () => {
         setNonNegotiables(entry.non_negotiables);
         setHabits(entry.habits);
         setJournalEntries(
-          entry.journal_entries.map((j) => ({
+          entry.journal_entries.map((j: any) => ({
             ...j,
+            photos: j.photos || [],
             timestamp: new Date(j.timestamp),
           }))
         );
