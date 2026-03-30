@@ -1,20 +1,20 @@
 import { ShieldCheck, ShieldX } from "lucide-react";
 
-const RULES = [
-  { id: "no-smoking", label: "No Smoking", icon: "🚭" },
-  { id: "no-drinking", label: "No Drinking", icon: "🚫" },
-  { id: "no-addiction", label: "No Addiction", icon: "🧠" },
-  { id: "no-social-media", label: "No Social Media Screen Time", icon: "📵" },
-];
+interface Rule {
+  id: string;
+  label: string;
+  icon: string;
+}
 
 interface Props {
+  rules: Rule[];
   checked: Record<string, boolean>;
   onChange: (id: string) => void;
 }
 
-const NonNegotiables = ({ checked, onChange }: Props) => {
-  const allGood = RULES.every((r) => checked[r.id]);
-  const keptCount = RULES.filter((r) => checked[r.id]).length;
+const NonNegotiables = ({ rules, checked, onChange }: Props) => {
+  const allGood = rules.every((r) => checked[r.id]);
+  const keptCount = rules.filter((r) => checked[r.id]).length;
 
   return (
     <div className={`card-section p-6 ${allGood ? "card-success-glow" : "card-danger-glow"}`}>
@@ -34,11 +34,11 @@ const NonNegotiables = ({ checked, onChange }: Props) => {
           </h2>
         </div>
         <span className={`text-xs font-heading font-bold ${allGood ? "text-success" : "text-destructive"}`}>
-          {keptCount}/{RULES.length}
+          {keptCount}/{rules.length}
         </span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {RULES.map((rule) => {
+        {rules.map((rule) => {
           const isChecked = !!checked[rule.id];
           return (
             <button

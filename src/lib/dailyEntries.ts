@@ -2,10 +2,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface DailyEntry {
   id?: string;
+  user_id?: string;
   entry_date: string;
   non_negotiables: Record<string, boolean>;
   habits: Record<string, boolean>;
-  journal_entries: Array<{ id: string; text: string; audioUrl?: string; timestamp: string }>;
+  journal_entries: Array<{ id: string; text: string; audioUrl?: string; photos?: { url: string; caption: string }[]; timestamp: string }>;
   todos: Array<{ id: string; text: string; done: boolean }>;
   percentage: number;
   created_at?: string;
@@ -15,7 +16,6 @@ export interface DailyEntry {
 /** Get IST date string (YYYY-MM-DD) for the current moment */
 export const getISTDateString = (): string => {
   const now = new Date();
-  // IST is UTC+5:30
   const istOffset = 5.5 * 60 * 60 * 1000;
   const istTime = new Date(now.getTime() + istOffset + now.getTimezoneOffset() * 60 * 1000);
   return istTime.toISOString().split("T")[0];
@@ -33,11 +33,15 @@ export const msUntilMidnightIST = (): number => {
 };
 
 /** Upsert today's entry */
-export const upsertDailyEntry = async (entry: Omit<DailyEntry, "id" | "created_at" | "updated_at">): Promise<void> => {
+export const upsertDailyEntry = async (
+  entry: Omit<DailyEntry, "id" | "created_at" | "updated_at">,
+  userId: string
+): Promise<void> => {
   const { error } = await supabase
     .from("daily_entries")
     .upsert(
       {
+        user_id: userId,
         entry_date: entry.entry_date,
         non_negotiables: entry.non_negotiables as any,
         habits: entry.habits as any,
@@ -45,17 +49,18 @@ export const upsertDailyEntry = async (entry: Omit<DailyEntry, "id" | "created_a
         todos: entry.todos as any,
         percentage: entry.percentage,
       },
-      { onConflict: "entry_date" }
+      { onConflict: "user_id,entry_date" }
     );
   if (error) console.error("Failed to upsert daily entry:", error);
 };
 
 /** Fetch a single day's entry */
-export const fetchDailyEntry = async (date: string): Promise<DailyEntry | null> => {
+export const fetchDailyEntry = async (date: string, userId: string): Promise<DailyEntry | null> => {
   const { data, error } = await supabase
     .from("daily_entries")
     .select("*")
     .eq("entry_date", date)
+    .eq("user_id", userId)
     .maybeSingle();
   if (error) {
     console.error("Failed to fetch daily entry:", error);
@@ -64,6 +69,7 @@ export const fetchDailyEntry = async (date: string): Promise<DailyEntry | null> 
   if (!data) return null;
   return {
     id: data.id,
+    user_id: data.user_id ?? undefined,
     entry_date: data.entry_date,
     non_negotiables: (data.non_negotiables ?? {}) as Record<string, boolean>,
     habits: (data.habits ?? {}) as Record<string, boolean>,
@@ -76,10 +82,11 @@ export const fetchDailyEntry = async (date: string): Promise<DailyEntry | null> 
 };
 
 /** Fetch entries for a date range */
-export const fetchEntriesRange = async (from: string, to: string): Promise<DailyEntry[]> => {
+export const fetchEntriesRange = async (from: string, to: string, userId: string): Promise<DailyEntry[]> => {
   const { data, error } = await supabase
     .from("daily_entries")
     .select("*")
+    .eq("user_id", userId)
     .gte("entry_date", from)
     .lte("entry_date", to)
     .order("entry_date", { ascending: false });
@@ -89,6 +96,7 @@ export const fetchEntriesRange = async (from: string, to: string): Promise<Daily
   }
   return (data ?? []).map((d) => ({
     id: d.id,
+    user_id: d.user_id ?? undefined,
     entry_date: d.entry_date,
     non_negotiables: (d.non_negotiables ?? {}) as Record<string, boolean>,
     habits: (d.habits ?? {}) as Record<string, boolean>,
@@ -100,11 +108,12 @@ export const fetchEntriesRange = async (from: string, to: string): Promise<Daily
   }));
 };
 
-/** Fetch all entries */
-export const fetchAllEntries = async (): Promise<DailyEntry[]> => {
+/** Fetch all entries for a user */
+export const fetchAllEntries = async (userId: string): Promise<DailyEntry[]> => {
   const { data, error } = await supabase
     .from("daily_entries")
     .select("*")
+    .eq("user_id", userId)
     .order("entry_date", { ascending: false });
   if (error) {
     console.error("Failed to fetch all entries:", error);
@@ -112,6 +121,7 @@ export const fetchAllEntries = async (): Promise<DailyEntry[]> => {
   }
   return (data ?? []).map((d) => ({
     id: d.id,
+    user_id: d.user_id ?? undefined,
     entry_date: d.entry_date,
     non_negotiables: (d.non_negotiables ?? {}) as Record<string, boolean>,
     habits: (d.habits ?? {}) as Record<string, boolean>,
@@ -123,11 +133,12 @@ export const fetchAllEntries = async (): Promise<DailyEntry[]> => {
   }));
 };
 
-/** Delete all entries (for reset) */
-export const deleteAllEntries = async (): Promise<void> => {
+/** Delete all entries for a user (for reset) */
+export const deleteAllEntries = async (userId: string): Promise<void> => {
   const { error } = await supabase
     .from("daily_entries")
     .delete()
+    .eq("user_id", userId)
     .gte("entry_date", "2000-01-01");
   if (error) console.error("Failed to delete all entries:", error);
 };
