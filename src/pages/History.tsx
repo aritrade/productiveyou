@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, subMonths, addMonths } from "date-fns";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Download, FileText, BarChart3, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { fetchAllEntries, fetchEntriesRange, type DailyEntry } from "@/lib/dailyEntries";
 import { generateProgressPDF } from "@/lib/generatePDF";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
