@@ -22,6 +22,7 @@ interface JournalEntry {
   id: string;
   text: string;
   audioUrl?: string;
+  photos?: { url: string; caption: string }[];
   timestamp: Date;
 }
 
