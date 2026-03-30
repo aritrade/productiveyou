@@ -25,6 +25,7 @@ export type Database = {
           percentage: number
           todos: Json
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -36,6 +37,7 @@ export type Database = {
           percentage?: number
           todos?: Json
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -47,6 +49,46 @@ export type Database = {
           percentage?: number
           todos?: Json
           updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          consistency_duration_months: number
+          created_at: string
+          custom_habits: Json
+          custom_non_negotiables: Json
+          display_name: string | null
+          id: string
+          onboarding_completed: boolean
+          streak_start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consistency_duration_months?: number
+          created_at?: string
+          custom_habits?: Json
+          custom_non_negotiables?: Json
+          display_name?: string | null
+          id?: string
+          onboarding_completed?: boolean
+          streak_start_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consistency_duration_months?: number
+          created_at?: string
+          custom_habits?: Json
+          custom_non_negotiables?: Json
+          display_name?: string | null
+          id?: string
+          onboarding_completed?: boolean
+          streak_start_date?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
