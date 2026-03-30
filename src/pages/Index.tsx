@@ -108,6 +108,7 @@ const Index = () => {
           id: j.id,
           text: j.text,
           audioUrl: j.audioUrl,
+          photos: j.photos,
           timestamp: j.timestamp.toISOString(),
         })),
         todos,
