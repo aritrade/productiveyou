@@ -236,6 +236,13 @@ const Index = () => {
           </div>
           <div className="text-right flex items-center gap-4">
             <button
+              onClick={() => navigate("/wrapped")}
+              className="flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-primary hover:bg-primary/20 transition-colors"
+            >
+              <Sparkles className="h-3 w-3" />
+              Wrapped
+            </button>
+            <button
               onClick={() => navigate("/history")}
               className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
             >
