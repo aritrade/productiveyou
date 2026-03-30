@@ -37,23 +37,30 @@ const DURATION_OPTIONS = [
 
 const Onboarding = () => {
   const navigate = useNavigate();
-  const { user, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const { toast } = useToast();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
 
+  const isEditing = profile?.onboarding_completed ?? false;
+
   // Step 1: Non-negotiables
-  const [nonNegs, setNonNegs] = useState(DEFAULT_NON_NEGOTIABLES);
+  const [nonNegs, setNonNegs] = useState(
+    isEditing && profile?.custom_non_negotiables?.length ? profile.custom_non_negotiables : DEFAULT_NON_NEGOTIABLES
+  );
   const [newNonNegLabel, setNewNonNegLabel] = useState("");
   const [newNonNegIcon, setNewNonNegIcon] = useState("🚫");
 
   // Step 2: Habits
-  const [habits, setHabits] = useState(DEFAULT_HABITS);
+  const [habits, setHabits] = useState(
+    isEditing && profile?.custom_habits?.length ? profile.custom_habits : DEFAULT_HABITS
+  );
   const [newHabitLabel, setNewHabitLabel] = useState("");
   const [newHabitEmoji, setNewHabitEmoji] = useState("✅");
 
   // Step 3: Duration
-  const [duration, setDuration] = useState(24);
+  const [duration, setDuration] = useState(profile?.consistency_duration_months ?? 24);
+
 
   const addNonNeg = () => {
     if (!newNonNegLabel.trim()) return;
