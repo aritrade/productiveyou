@@ -156,6 +156,29 @@ const Onboarding = () => {
             <div className="space-y-5">
               <div>
                 <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber mb-1">
+                  How should we address you?
+                </h2>
+                <p className="text-xs text-muted-foreground">Enter the name you'd like to see when you log in.</p>
+              </div>
+              <input
+                value={preferredName}
+                onChange={(e) => setPreferredName(e.target.value)}
+                placeholder="e.g. Neel, Captain, Warrior..."
+                className="input-field w-full text-base"
+                autoFocus
+              />
+              {preferredName.trim() && (
+                <p className="text-sm text-muted-foreground">
+                  You'll be greeted as: <span className="text-primary font-semibold">{preferredName.trim()}</span>
+                </p>
+              )}
+            </div>
+          )}
+
+          {step === 1 && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber mb-1">
                   Your Non-Negotiables
                 </h2>
                 <p className="text-xs text-muted-foreground">Rules you commit to never break. Remove or add your own.</p>
@@ -192,7 +215,7 @@ const Onboarding = () => {
             </div>
           )}
 
-          {step === 1 && (
+          {step === 2 && (
             <div className="space-y-5">
               <div>
                 <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber mb-1">
@@ -232,7 +255,7 @@ const Onboarding = () => {
             </div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <div className="space-y-5">
               <div>
                 <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber mb-1">
