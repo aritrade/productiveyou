@@ -192,7 +192,7 @@ const Index = () => {
     }
 
     return { currentStreak: current, longestStreak: longest, totalPoints: points };
-  }, [history]);
+  }, [history, consistencyDurationMonths]);
 
   const toggleNonNeg = useCallback((id: string) =>
     setNonNegotiables((prev) => ({ ...prev, [id]: !prev[id] })), []);
