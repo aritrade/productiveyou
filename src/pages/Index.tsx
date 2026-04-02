@@ -53,6 +53,7 @@ const Index = () => {
   const userHabits = useMemo(() => profile?.custom_habits ?? [], [profile]);
   const totalItems = userRules.length + userHabits.length;
   const streakStartDate = profile?.streak_start_date ?? getISTDateString();
+  const consistencyDurationMonths = profile?.consistency_duration_months ?? 24;
 
   // Load today's data from DB on mount
   useEffect(() => {
