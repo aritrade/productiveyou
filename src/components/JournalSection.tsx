@@ -83,10 +83,11 @@ const JournalSection = ({ entries, onSave }: Props) => {
   };
 
   const uploadPhotos = async (): Promise<{ url: string; caption: string }[]> => {
+    if (!user) return [];
     const uploaded: { url: string; caption: string }[] = [];
     for (const photo of photos) {
       const ext = photo.file.name.split(".").pop() || "jpg";
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const { error } = await supabase.storage
         .from("journal-photos")
         .upload(path, photo.file, { contentType: photo.file.type });
@@ -94,8 +95,14 @@ const JournalSection = ({ entries, onSave }: Props) => {
         console.error("Photo upload failed:", error);
         continue;
       }
-      const { data: urlData } = supabase.storage.from("journal-photos").getPublicUrl(path);
-      uploaded.push({ url: urlData.publicUrl, caption: photo.caption });
+      const { data: signedUrlData, error: signError } = await supabase.storage
+        .from("journal-photos")
+        .createSignedUrl(path, 60 * 60 * 24 * 365); // 1 year
+      if (signError || !signedUrlData?.signedUrl) {
+        console.error("Failed to create signed URL:", signError);
+        continue;
+      }
+      uploaded.push({ url: signedUrlData.signedUrl, caption: photo.caption });
     }
     return uploaded;
   };
