@@ -44,6 +44,11 @@ const Onboarding = () => {
 
   const isEditing = profile?.onboarding_completed ?? false;
 
+  // Step 0: Preferred name
+  const [preferredName, setPreferredName] = useState(
+    profile?.display_name || user?.user_metadata?.display_name || ""
+  );
+
   // Step 1: Non-negotiables
   const [nonNegs, setNonNegs] = useState(
     isEditing && profile?.custom_non_negotiables?.length ? profile.custom_non_negotiables : DEFAULT_NON_NEGOTIABLES
