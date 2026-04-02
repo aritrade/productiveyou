@@ -103,7 +103,7 @@ const Onboarding = () => {
           consistency_duration_months: duration,
           streak_start_date: new Date().toISOString().split("T")[0],
           onboarding_completed: true,
-          display_name: user.user_metadata?.display_name || user.email?.split("@")[0] || null,
+          display_name: preferredName.trim() || user.user_metadata?.display_name || user.email?.split("@")[0] || null,
         })
         .eq("user_id", user.id);
 
