@@ -22,13 +22,14 @@ interface Props {
   currentStreak: number;
   longestStreak: number;
   totalPoints: number;
+  consistencyDurationMonths?: number;
   onReset?: () => void;
 }
 
-const TOTAL_DAYS = 730; // 2 years
 const COLS = 52; // weeks per row roughly
 
-const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, onReset }: Props) => {
+const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, consistencyDurationMonths = 24, onReset }: Props) => {
+  const TOTAL_DAYS = Math.round(consistencyDurationMonths * 30.44); // dynamic based on user selection
   const [hoveredDay, setHoveredDay] = useState<DayRecord | null>(null);
 
   const grid = useMemo(() => {
@@ -76,7 +77,7 @@ const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, onR
             <Trophy className="h-5 w-5 text-primary" />
           </div>
           <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber">
-            2-Year Consistency
+            {consistencyDurationMonths >= 24 ? "2-Year" : `${consistencyDurationMonths}-Month`} Consistency
           </h2>
         </div>
         {onReset && (
@@ -188,7 +189,7 @@ const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, onR
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-heading text-muted-foreground tracking-wider uppercase">
-            730-Day Heatmap
+            {TOTAL_DAYS}-Day Heatmap
           </span>
           {hoveredDay && (
             <span className="text-[10px] font-heading text-foreground/70">
