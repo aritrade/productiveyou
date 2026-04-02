@@ -303,7 +303,8 @@ const Onboarding = () => {
             {step < steps.length - 1 ? (
               <button
                 onClick={() => setStep((s) => s + 1)}
-                className="btn-primary flex items-center gap-1 text-xs"
+                disabled={step === 0 && !preferredName.trim()}
+                className="btn-primary flex items-center gap-1 text-xs disabled:opacity-30"
               >
                 Next <ChevronRight className="h-4 w-4" />
               </button>
