@@ -28,7 +28,8 @@ interface Props {
 
 const COLS = 52; // weeks per row roughly
 
-const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, onReset }: Props) => {
+const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, consistencyDurationMonths = 24, onReset }: Props) => {
+  const TOTAL_DAYS = Math.round(consistencyDurationMonths * 30.44); // dynamic based on user selection
   const [hoveredDay, setHoveredDay] = useState<DayRecord | null>(null);
 
   const grid = useMemo(() => {
