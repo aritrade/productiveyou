@@ -22,10 +22,10 @@ interface Props {
   currentStreak: number;
   longestStreak: number;
   totalPoints: number;
+  consistencyDurationMonths?: number;
   onReset?: () => void;
 }
 
-const TOTAL_DAYS = 730; // 2 years
 const COLS = 52; // weeks per row roughly
 
 const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, onReset }: Props) => {
