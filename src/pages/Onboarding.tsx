@@ -117,7 +117,7 @@ const Onboarding = () => {
     }
   };
 
-  const steps = ["Non-Negotiables", "Daily Habits", "Duration"];
+  const steps = ["Your Name", "Non-Negotiables", "Daily Habits", "Duration"];
 
   return (
     <div className="min-h-screen bg-background bg-noise flex items-center justify-center p-4">
