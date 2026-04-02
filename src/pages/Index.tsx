@@ -292,6 +292,7 @@ const Index = () => {
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           totalPoints={totalPoints}
+          consistencyDurationMonths={consistencyDurationMonths}
           onReset={resetStreak}
         />
         <NonNegotiables rules={userRules} checked={nonNegotiables} onChange={toggleNonNeg} />
