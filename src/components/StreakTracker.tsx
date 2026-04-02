@@ -77,7 +77,7 @@ const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, con
             <Trophy className="h-5 w-5 text-primary" />
           </div>
           <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber">
-            2-Year Consistency
+            {consistencyDurationMonths >= 24 ? "2-Year" : `${consistencyDurationMonths}-Month`} Consistency
           </h2>
         </div>
         {onReset && (
