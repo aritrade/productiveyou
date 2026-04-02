@@ -189,7 +189,7 @@ const StreakTracker = ({ history, currentStreak, longestStreak, totalPoints, con
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-heading text-muted-foreground tracking-wider uppercase">
-            730-Day Heatmap
+            {TOTAL_DAYS}-Day Heatmap
           </span>
           {hoveredDay && (
             <span className="text-[10px] font-heading text-foreground/70">
