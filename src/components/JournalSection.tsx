@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { BookOpen, Mic, MicOff, Save, ImagePlus, X, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface JournalEntry {
   id: string;
