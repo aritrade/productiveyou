@@ -235,7 +235,7 @@ const Index = () => {
                 MONK MODE
               </h1>
               <p className="text-[10px] text-muted-foreground font-heading tracking-widest uppercase">
-                {profile?.display_name || "Activated Productivity Tracker"}
+                Activated Productivity Tracker
               </p>
             </div>
           </div>
