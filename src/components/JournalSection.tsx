@@ -23,6 +23,7 @@ interface PhotoDraft {
 }
 
 const JournalSection = ({ entries, onSave }: Props) => {
+  const { user } = useAuth();
   const [text, setText] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | undefined>();
