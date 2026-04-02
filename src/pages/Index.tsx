@@ -235,7 +235,7 @@ const Index = () => {
                 MONK MODE
               </h1>
               <p className="text-[10px] text-muted-foreground font-heading tracking-widest uppercase">
-                {profile?.display_name || "Activated Productivity Tracker"}
+                Activated Productivity Tracker
               </p>
             </div>
           </div>
@@ -287,6 +287,11 @@ const Index = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+        {profile?.display_name && (
+          <p className="text-sm font-heading text-muted-foreground">
+            Welcome back, <span className="text-primary font-semibold">{profile.display_name}</span> 🔥
+          </p>
+        )}
         <DailyQuote />
         <StreakTracker
           history={history}

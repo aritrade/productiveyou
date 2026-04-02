@@ -44,6 +44,11 @@ const Onboarding = () => {
 
   const isEditing = profile?.onboarding_completed ?? false;
 
+  // Step 0: Preferred name
+  const [preferredName, setPreferredName] = useState(
+    profile?.display_name || user?.user_metadata?.display_name || ""
+  );
+
   // Step 1: Non-negotiables
   const [nonNegs, setNonNegs] = useState(
     isEditing && profile?.custom_non_negotiables?.length ? profile.custom_non_negotiables : DEFAULT_NON_NEGOTIABLES
@@ -98,7 +103,7 @@ const Onboarding = () => {
           consistency_duration_months: duration,
           streak_start_date: new Date().toISOString().split("T")[0],
           onboarding_completed: true,
-          display_name: user.user_metadata?.display_name || user.email?.split("@")[0] || null,
+          display_name: preferredName.trim() || user.user_metadata?.display_name || user.email?.split("@")[0] || null,
         })
         .eq("user_id", user.id);
 
@@ -112,7 +117,7 @@ const Onboarding = () => {
     }
   };
 
-  const steps = ["Non-Negotiables", "Daily Habits", "Duration"];
+  const steps = ["Your Name", "Non-Negotiables", "Daily Habits", "Duration"];
 
   return (
     <div className="min-h-screen bg-background bg-noise flex items-center justify-center p-4">
@@ -148,6 +153,29 @@ const Onboarding = () => {
         {/* Content */}
         <div className="card-section p-6">
           {step === 0 && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber mb-1">
+                  How should we address you?
+                </h2>
+                <p className="text-xs text-muted-foreground">Enter the name you'd like to see when you log in.</p>
+              </div>
+              <input
+                value={preferredName}
+                onChange={(e) => setPreferredName(e.target.value)}
+                placeholder="e.g. Neel, Captain, Warrior..."
+                className="input-field w-full text-base"
+                autoFocus
+              />
+              {preferredName.trim() && (
+                <p className="text-sm text-muted-foreground">
+                  You'll be greeted as: <span className="text-primary font-semibold">{preferredName.trim()}</span>
+                </p>
+              )}
+            </div>
+          )}
+
+          {step === 1 && (
             <div className="space-y-5">
               <div>
                 <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber mb-1">
@@ -187,7 +215,7 @@ const Onboarding = () => {
             </div>
           )}
 
-          {step === 1 && (
+          {step === 2 && (
             <div className="space-y-5">
               <div>
                 <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber mb-1">
@@ -227,7 +255,7 @@ const Onboarding = () => {
             </div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <div className="space-y-5">
               <div>
                 <h2 className="text-sm font-heading font-semibold tracking-widest uppercase text-gradient-amber mb-1">
@@ -275,7 +303,8 @@ const Onboarding = () => {
             {step < steps.length - 1 ? (
               <button
                 onClick={() => setStep((s) => s + 1)}
-                className="btn-primary flex items-center gap-1 text-xs"
+                disabled={step === 0 && !preferredName.trim()}
+                className="btn-primary flex items-center gap-1 text-xs disabled:opacity-30"
               >
                 Next <ChevronRight className="h-4 w-4" />
               </button>
