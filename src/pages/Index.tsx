@@ -153,7 +153,8 @@ const Index = () => {
     let current = 0;
 
     const today = new Date();
-    for (let i = 0; i < 730; i++) {
+    const maxDays = Math.round(consistencyDurationMonths * 30.44);
+    for (let i = 0; i < maxDays; i++) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
       const dateStr = d.toISOString().split("T")[0];
