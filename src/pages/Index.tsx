@@ -256,7 +256,7 @@ const Index = () => {
               <span className="hidden sm:inline">History</span>
             </button>
             <button
-              onClick={() => navigate("/onboarding")}
+              onClick={() => navigate("/onboarding", { state: { from: "dashboard" } })}
               className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-2 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
               title="Settings"
             >
