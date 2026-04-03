@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Zap, ChevronRight, ChevronLeft, Plus, X, Check } from "lucide-react";
+import { Zap, ChevronRight, ChevronLeft, Plus, X, Check, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const DEFAULT_NON_NEGOTIABLES = [

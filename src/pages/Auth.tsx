@@ -81,10 +81,10 @@ const Auth = () => {
         <div className="card-section p-6 space-y-6">
           <div className="text-center">
             <h2 className="text-lg font-heading font-semibold text-foreground">
-              {isSignUp ? "Create your account" : "Welcome back"}
+              {isSignUp ? "Begin your transformation" : "The grind never stops"}
             </h2>
             <p className="text-xs text-muted-foreground mt-1">
-              {isSignUp ? "Start your monk mode journey" : "Continue your journey"}
+              {isSignUp ? "Discipline is the bridge between goals and accomplishment" : "Stay locked in. Your future self will thank you."}
             </p>
           </div>
 
