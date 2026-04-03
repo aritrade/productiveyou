@@ -8,6 +8,7 @@ import JournalSection from "@/components/JournalSection";
 import TodoList from "@/components/TodoList";
 import DailyQuote from "@/components/DailyQuote";
 import StreakTracker from "@/components/StreakTracker";
+import Collectibles from "@/components/Collectibles";
 import { Zap, History, Sparkles, LogOut, Settings } from "lucide-react";
 import { useMidnightReset } from "@/hooks/useMidnightReset";
 import {
@@ -255,7 +256,7 @@ const Index = () => {
               <span className="hidden sm:inline">History</span>
             </button>
             <button
-              onClick={() => navigate("/onboarding")}
+              onClick={() => navigate("/onboarding", { state: { from: "dashboard" } })}
               className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-2 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
               title="Settings"
             >
@@ -303,6 +304,7 @@ const Index = () => {
         />
         <NonNegotiables rules={userRules} checked={nonNegotiables} onChange={toggleNonNeg} />
         <DailyHabits habits={userHabits} checked={habits} onChange={toggleHabit} />
+        <Collectibles totalPoints={totalPoints} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <JournalSection entries={journalEntries} onSave={saveJournal} />
           <TodoList todos={todos} onAdd={addTodo} onToggle={toggleTodo} onDelete={deleteTodo} />
