@@ -37,12 +37,14 @@ const DURATION_OPTIONS = [
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, profile, refreshProfile } = useAuth();
   const { toast } = useToast();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
 
   const isEditing = profile?.onboarding_completed ?? false;
+  const cameFromDashboard = location.state?.from === "dashboard";
 
   // Step 0: Preferred name
   const [preferredName, setPreferredName] = useState(
