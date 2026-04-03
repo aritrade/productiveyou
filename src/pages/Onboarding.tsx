@@ -125,13 +125,21 @@ const Onboarding = () => {
     <div className="min-h-screen bg-background bg-noise flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 relative">
+          {cameFromDashboard && (
+            <button
+              onClick={() => navigate("/")}
+              className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-1 rounded-lg border border-border bg-secondary px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
+            >
+              <ArrowLeft className="h-3 w-3" /> Back
+            </button>
+          )}
           <div className="w-14 h-14 rounded-2xl mx-auto mb-3 flex items-center justify-center" style={{
             background: "linear-gradient(135deg, hsl(38 95% 52%), hsl(32 80% 42%))"
           }}>
             <Zap className="h-7 w-7 text-primary-foreground" />
           </div>
-          <h1 className="text-xl font-heading font-bold text-gradient-amber">SET UP YOUR MONK MODE</h1>
+          <h1 className="text-xl font-heading font-bold text-gradient-amber">{isEditing ? "EDIT YOUR MONK MODE" : "SET UP YOUR MONK MODE"}</h1>
           <p className="text-xs text-muted-foreground mt-1 font-heading tracking-wider">Customize your journey</p>
         </div>
 
