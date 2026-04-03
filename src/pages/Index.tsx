@@ -290,7 +290,7 @@ const Index = () => {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         {profile?.display_name && (
           <p className="text-sm font-heading text-muted-foreground">
-            Welcome back, <span className="text-primary font-semibold">{profile.display_name}</span> 🔥
+            {new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening"}, <span className="text-primary font-semibold">{profile.display_name}</span> 🔥
           </p>
         )}
         <DailyQuote />
