@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Lock, Trophy } from "lucide-react";
 
 interface CollectibleCharacter {
@@ -25,12 +25,57 @@ const CHARACTERS: CollectibleCharacter[] = [
   { id: "eternal-sage", name: "Eternal Sage", emoji: "👁️", description: "You have transcended. Legend status unlocked.", pointsRequired: 7500, tier: "legendary" },
 ];
 
-const TIER_STYLES: Record<string, { border: string; bg: string; glow: string; label: string }> = {
-  bronze: { border: "border-orange-700/40", bg: "bg-orange-900/20", glow: "", label: "Bronze" },
-  silver: { border: "border-slate-400/40", bg: "bg-slate-500/15", glow: "", label: "Silver" },
-  gold: { border: "border-primary/50", bg: "bg-primary/10", glow: "shadow-[0_0_15px_-3px_hsl(38_95%_52%/0.2)]", label: "Gold" },
-  diamond: { border: "border-sky-400/50", bg: "bg-sky-500/10", glow: "shadow-[0_0_20px_-3px_hsl(200_80%_55%/0.25)]", label: "Diamond" },
-  legendary: { border: "border-purple-400/50", bg: "bg-purple-500/10", glow: "shadow-[0_0_25px_-3px_hsl(270_70%_55%/0.3)]", label: "Legendary" },
+const TIER_STYLES: Record<string, { border: string; bg: string; glow: string; glowColor: string; label: string }> = {
+  bronze: { border: "border-orange-700/40", bg: "bg-orange-900/20", glow: "", glowColor: "hsl(25 80% 50% / 0.4)", label: "Bronze" },
+  silver: { border: "border-slate-400/40", bg: "bg-slate-500/15", glow: "", glowColor: "hsl(220 15% 65% / 0.4)", label: "Silver" },
+  gold: { border: "border-primary/50", bg: "bg-primary/10", glow: "shadow-[0_0_15px_-3px_hsl(38_95%_52%/0.2)]", glowColor: "hsl(38 95% 52% / 0.5)", label: "Gold" },
+  diamond: { border: "border-sky-400/50", bg: "bg-sky-500/10", glow: "shadow-[0_0_20px_-3px_hsl(200_80%_55%/0.25)]", glowColor: "hsl(200 80% 55% / 0.5)", label: "Diamond" },
+  legendary: { border: "border-purple-400/50", bg: "bg-purple-500/10", glow: "shadow-[0_0_25px_-3px_hsl(270_70%_55%/0.3)]", glowColor: "hsl(270 70% 55% / 0.5)", label: "Legendary" },
+};
+
+const CONFETTI_EMOJIS = ["✨", "⭐", "🌟", "💫", "🎉", "🏆", "🔥", "💥"];
+
+interface ConfettiParticle {
+  id: number;
+  emoji: string;
+  x: number;
+  y: number;
+  delay: number;
+}
+
+const ConfettiBurst = ({ onDone }: { onDone: () => void }) => {
+  const [particles, setParticles] = useState<ConfettiParticle[]>([]);
+
+  useEffect(() => {
+    const p: ConfettiParticle[] = Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      emoji: CONFETTI_EMOJIS[i % CONFETTI_EMOJIS.length],
+      x: Math.cos((i / 12) * Math.PI * 2) * 60,
+      y: Math.sin((i / 12) * Math.PI * 2) * 60,
+      delay: Math.random() * 0.2,
+    }));
+    setParticles(p);
+    const timer = setTimeout(onDone, 1200);
+    return () => clearTimeout(timer);
+  }, [onDone]);
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">
+      {particles.map((p) => (
+        <span
+          key={p.id}
+          className="absolute text-sm animate-float-up"
+          style={{
+            left: `calc(50% + ${p.x}px)`,
+            top: `calc(50% + ${p.y}px)`,
+            animationDelay: `${p.delay}s`,
+          }}
+        >
+          {p.emoji}
+        </span>
+      ))}
+    </div>
+  );
 };
 
 interface Props {
@@ -39,7 +84,42 @@ interface Props {
 
 const Collectibles = ({ totalPoints }: Props) => {
   const [selectedChar, setSelectedChar] = useState<CollectibleCharacter | null>(null);
+  const [newlyUnlocked, setNewlyUnlocked] = useState<Set<string>>(new Set());
+  const [showConfetti, setShowConfetti] = useState<string | null>(null);
+  const prevPointsRef = useRef(totalPoints);
   const unlockedCount = CHARACTERS.filter((c) => totalPoints >= c.pointsRequired).length;
+
+  // Detect newly unlocked characters when points change
+  useEffect(() => {
+    const prevPoints = prevPointsRef.current;
+    if (prevPoints === totalPoints) return;
+
+    const justUnlocked = CHARACTERS.filter(
+      (c) => c.pointsRequired > prevPoints && c.pointsRequired <= totalPoints
+    );
+
+    if (justUnlocked.length > 0) {
+      const ids = new Set(justUnlocked.map((c) => c.id));
+      setNewlyUnlocked(ids);
+      setShowConfetti(justUnlocked[justUnlocked.length - 1].id);
+      setSelectedChar(justUnlocked[justUnlocked.length - 1]);
+
+      // Clear "new" badges after 5s
+      const timer = setTimeout(() => setNewlyUnlocked(new Set()), 5000);
+      prevPointsRef.current = totalPoints;
+      return () => clearTimeout(timer);
+    }
+
+    prevPointsRef.current = totalPoints;
+  }, [totalPoints]);
+
+  const handleConfettiDone = useCallback(() => setShowConfetti(null), []);
+
+  const getTierColor = (tier: string) =>
+    tier === "legendary" ? "text-purple-400" :
+    tier === "diamond" ? "text-sky-400" :
+    tier === "gold" ? "text-primary" :
+    tier === "silver" ? "text-slate-400" : "text-orange-600";
 
   return (
     <div className="card-section p-6 space-y-5">
@@ -66,6 +146,7 @@ const Collectibles = ({ totalPoints }: Props) => {
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
         {CHARACTERS.map((char) => {
           const unlocked = totalPoints >= char.pointsRequired;
+          const isNew = newlyUnlocked.has(char.id);
           const style = TIER_STYLES[char.tier];
           return (
             <button
@@ -73,10 +154,12 @@ const Collectibles = ({ totalPoints }: Props) => {
               onClick={() => setSelectedChar(char)}
               className={`relative flex flex-col items-center gap-1.5 rounded-xl border p-3 transition-all ${
                 unlocked
-                  ? `${style.border} ${style.bg} ${style.glow} hover:scale-105 cursor-pointer`
+                  ? `${style.border} ${style.bg} ${isNew ? "animate-glow-pulse" : style.glow} hover:scale-105 cursor-pointer`
                   : "border-border bg-muted/20 opacity-50 cursor-pointer"
-              }`}
+              } ${isNew ? "animate-unlock-pop" : ""}`}
+              style={isNew ? { "--glow-color": style.glowColor } as React.CSSProperties : undefined}
             >
+              {showConfetti === char.id && <ConfettiBurst onDone={handleConfettiDone} />}
               <span className={`text-2xl ${unlocked ? "" : "grayscale blur-[2px]"}`}>
                 {char.emoji}
               </span>
@@ -91,13 +174,13 @@ const Collectibles = ({ totalPoints }: Props) => {
                 </div>
               )}
               {unlocked && (
-                <span className={`text-[8px] font-heading tracking-wider uppercase ${
-                  char.tier === "legendary" ? "text-purple-400" :
-                  char.tier === "diamond" ? "text-sky-400" :
-                  char.tier === "gold" ? "text-primary" :
-                  char.tier === "silver" ? "text-slate-400" : "text-orange-600"
-                }`}>
+                <span className={`text-[8px] font-heading tracking-wider uppercase ${getTierColor(char.tier)}`}>
                   {style.label}
+                </span>
+              )}
+              {isNew && (
+                <span className="absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[8px] font-heading font-bold px-1.5 py-0.5 rounded-full animate-unlock-pop">
+                  NEW!
                 </span>
               )}
             </button>
@@ -124,12 +207,7 @@ const Collectibles = ({ totalPoints }: Props) => {
                 ? selectedChar.description
                 : `Unlock at ${selectedChar.pointsRequired} points (${selectedChar.pointsRequired - totalPoints} more needed)`}
             </p>
-            <p className={`text-[10px] font-heading tracking-wider uppercase mt-1 ${
-              selectedChar.tier === "legendary" ? "text-purple-400" :
-              selectedChar.tier === "diamond" ? "text-sky-400" :
-              selectedChar.tier === "gold" ? "text-primary" :
-              selectedChar.tier === "silver" ? "text-slate-400" : "text-orange-600"
-            }`}>
+            <p className={`text-[10px] font-heading tracking-wider uppercase mt-1 ${getTierColor(selectedChar.tier)}`}>
               {TIER_STYLES[selectedChar.tier].label} Tier · {selectedChar.pointsRequired} pts
             </p>
           </div>
