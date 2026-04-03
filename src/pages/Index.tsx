@@ -304,6 +304,7 @@ const Index = () => {
         />
         <NonNegotiables rules={userRules} checked={nonNegotiables} onChange={toggleNonNeg} />
         <DailyHabits habits={userHabits} checked={habits} onChange={toggleHabit} />
+        <Collectibles totalPoints={totalPoints} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <JournalSection entries={journalEntries} onSave={saveJournal} />
           <TodoList todos={todos} onAdd={addTodo} onToggle={toggleTodo} onDelete={deleteTodo} />
