@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { toast } from "sonner";
 import { Lock, Trophy } from "lucide-react";
 
 interface CollectibleCharacter {
