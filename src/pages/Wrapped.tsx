@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Share2, Download, Sparkles, Flame, Trophy, BookOpen, CheckSquare, Camera } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 import { format, subDays, subWeeks, subMonths, startOfWeek, startOfMonth, endOfWeek, endOfMonth } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchEntriesRange, getISTDateString, type DailyEntry } from "@/lib/dailyEntries";
