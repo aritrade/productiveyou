@@ -9,6 +9,7 @@ import TodoList from "@/components/TodoList";
 import DailyQuote from "@/components/DailyQuote";
 import StreakTracker from "@/components/StreakTracker";
 import Collectibles from "@/components/Collectibles";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Zap, History, Sparkles, LogOut, Settings } from "lucide-react";
 import { useMidnightReset } from "@/hooks/useMidnightReset";
 import {
@@ -276,6 +277,7 @@ const Index = () => {
                 {format(new Date(), "MMM d, yyyy")}
               </p>
             </div>
+            <ThemeToggle />
             <button
               onClick={signOut}
               className="flex items-center gap-1 rounded-lg border border-border bg-secondary px-2 py-1.5 text-[10px] font-heading text-secondary-foreground hover:bg-destructive/20 hover:text-destructive hover:border-destructive/30 transition-colors"
