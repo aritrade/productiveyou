@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Zap, Mail, Lock, User, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -60,7 +61,10 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background bg-noise flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background bg-noise flex items-center justify-center p-4 relative">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">

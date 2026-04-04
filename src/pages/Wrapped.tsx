@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Share2, Download, Sparkles, Flame, Trophy, BookOpen, CheckSquare, Camera } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 import { format, subDays, subWeeks, subMonths, startOfWeek, startOfMonth, endOfWeek, endOfMonth } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchEntriesRange, getISTDateString, type DailyEntry } from "@/lib/dailyEntries";
@@ -199,7 +200,8 @@ const Wrapped = () => {
           <h1 className="text-sm font-heading font-bold tracking-widest uppercase text-gradient-amber">
             Monk Mode Wrapped
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            <ThemeToggle />
             <button onClick={handleShare} className="btn-secondary flex items-center gap-1.5 text-[10px] px-2.5 py-1.5">
               <Share2 className="h-3 w-3" />
               Share

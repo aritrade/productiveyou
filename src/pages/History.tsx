@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, subMonths, addMonths } from "date-fns";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Download, FileText, BarChart3, ArrowLeft } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchAllEntries, fetchEntriesRange, type DailyEntry } from "@/lib/dailyEntries";
@@ -109,6 +110,7 @@ const History = () => {
               </p>
             </div>
           </div>
+          <ThemeToggle />
         </div>
       </header>
 
