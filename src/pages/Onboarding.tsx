@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Zap, ChevronRight, ChevronLeft, Plus, X, Check, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const DEFAULT_NON_NEGOTIABLES = [
   { id: "no-smoking", label: "No Smoking", icon: "🚭" },
