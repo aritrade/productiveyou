@@ -110,6 +110,7 @@ const History = () => {
               </p>
             </div>
           </div>
+          <ThemeToggle />
         </div>
       </header>
 

@@ -200,7 +200,8 @@ const Wrapped = () => {
           <h1 className="text-sm font-heading font-bold tracking-widest uppercase text-gradient-amber">
             Monk Mode Wrapped
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            <ThemeToggle />
             <button onClick={handleShare} className="btn-secondary flex items-center gap-1.5 text-[10px] px-2.5 py-1.5">
               <Share2 className="h-3 w-3" />
               Share
