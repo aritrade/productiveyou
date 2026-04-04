@@ -105,6 +105,14 @@ const Collectibles = ({ totalPoints }: Props) => {
       setShowConfetti(justUnlocked[justUnlocked.length - 1].id);
       setSelectedChar(justUnlocked[justUnlocked.length - 1]);
 
+      // Toast notification for each unlocked character
+      justUnlocked.forEach((c) => {
+        toast.success(`${c.emoji} ${c.name} Unlocked!`, {
+          description: c.description,
+          duration: 5000,
+        });
+      });
+
       // Clear "new" badges after 5s
       const timer = setTimeout(() => setNewlyUnlocked(new Set()), 5000);
       prevPointsRef.current = totalPoints;
