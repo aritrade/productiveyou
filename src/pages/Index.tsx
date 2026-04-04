@@ -9,6 +9,7 @@ import TodoList from "@/components/TodoList";
 import DailyQuote from "@/components/DailyQuote";
 import StreakTracker from "@/components/StreakTracker";
 import Collectibles from "@/components/Collectibles";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Zap, History, Sparkles, LogOut, Settings } from "lucide-react";
 import { useMidnightReset } from "@/hooks/useMidnightReset";
 import {
