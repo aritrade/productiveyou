@@ -42,20 +42,6 @@
   </head>
 
   <body>
-    <script>
-      // SPA redirect decoder — pairs with public/404.html on GitHub Pages so
-      // deep links like /history work even though Pages has no built-in SPA
-      // rewrite. 404.html encodes the requested path/query as ?p=…&q=… and
-      // we restore it via history.replaceState before React Router mounts.
-      // Standard "spa-github-pages" technique (Rafael Pedicini, MIT).
-      // No-op on Lovable (Lovable serves index.html for every route).
-      (function (l) {
-        if (l.search[1] === "/") {
-          var decoded = l.search.slice(1).split("&").map(function (s) { return s.replace(/~and~/g, "&"); }).join("?");
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
-        }
-      })(window.location);
-    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
