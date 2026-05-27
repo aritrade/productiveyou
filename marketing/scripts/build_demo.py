@@ -10,13 +10,13 @@ Outputs:
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+import tts  # noqa: E402
 from slidekit import Slide, write_slides  # noqa: E402
 
 BUILD = Path("/tmp/pyou-build")
@@ -177,25 +177,23 @@ SCRIPT: list[tuple[Slide, str]] = [
 
 
 # ---- TTS + ffmpeg compose ----------------------------------------------
-VOICE = "Samantha"  # crisp built-in voice on macOS
-RATE = 175          # words per minute
+# Voice is backend-specific; None lets each backend pick its sensible default
+# (edge-tts: en-US-AriaNeural · macOS say: Samantha · pyttsx3: OS default).
+VOICE: str | None = None
+RATE = 175  # words per minute (translated per-backend in tts.py)
 
 
 def synthesize_audio(idx: int, text: str) -> tuple[str, float]:
     AUDIO_DIR.mkdir(parents=True, exist_ok=True)
-    aiff = AUDIO_DIR / f"v_{idx:02d}.aiff"
+    raw = (AUDIO_DIR / f"v_{idx:02d}").with_suffix(tts.preferred_suffix())
+    tts.synthesize(text, raw, voice=VOICE, rate=RATE)
+    # Normalize to AAC m4a so ffmpeg concat sees identical streams
     m4a = AUDIO_DIR / f"v_{idx:02d}.m4a"
     subprocess.run(
-        ["say", "-v", VOICE, "-r", str(RATE), "-o", str(aiff), text],
-        check=True,
-    )
-    # Convert to AAC m4a for ffmpeg
-    subprocess.run(
-        ["ffmpeg", "-y", "-loglevel", "error", "-i", str(aiff),
+        ["ffmpeg", "-y", "-loglevel", "error", "-i", str(raw),
          "-c:a", "aac", "-b:a", "128k", str(m4a)],
         check=True,
     )
-    # Probe duration
     out = subprocess.check_output(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",
          "-of", "default=nokey=1:noprint_wrappers=1", str(m4a)],
@@ -205,6 +203,7 @@ def synthesize_audio(idx: int, text: str) -> tuple[str, float]:
 
 
 def build():
+    print(f"> {tts.info()}")
     print("> rendering slides…")
     slide_paths = write_slides([s for s, _ in SCRIPT], str(DEMO_DIR))
 
@@ -261,6 +260,7 @@ def build():
 
     # Write a manifest so we can re-trace what was generated
     manifest = {
+        "backend": tts._resolve_backend(),  # noqa: SLF001 — internal but useful for repro
         "voice": VOICE,
         "rate_wpm": RATE,
         "slides": [

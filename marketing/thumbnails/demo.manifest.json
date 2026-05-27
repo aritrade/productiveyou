@@ -1,5 +1,6 @@
 {
-  "voice": "Samantha",
+  "backend": "edge",
+  "voice": null,
   "rate_wpm": 175,
   "slides": [
     {
@@ -63,6 +64,6 @@
       "voiceover": "Open Productive You dot Lovable dot app, pick your non-negotiables, and start day one."
     }
   ],
-  "total_duration_s": 87.75,
+  "total_duration_s": 103.92,
   "output": "/Users/aritra.de/Desktop/Cursor Work/productiveyou/marketing/demo.mp4"
 }

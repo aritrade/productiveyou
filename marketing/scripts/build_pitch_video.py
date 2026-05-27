@@ -16,6 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+import tts  # noqa: E402
 from slidekit import Slide, write_slides  # noqa: E402
 
 BUILD = Path("/tmp/pyou-build")
@@ -213,17 +214,17 @@ SCRIPT: list[tuple[Slide, str]] = [
 ]
 
 
-VOICE = "Samantha"
-RATE = 170
+VOICE: str | None = None  # let each tts backend pick a sensible default
+RATE = 170                # words-per-minute (translated per backend)
 
 
 def synthesize_audio(idx: int, text: str) -> tuple[str, float]:
     AUDIO_DIR.mkdir(parents=True, exist_ok=True)
-    aiff = AUDIO_DIR / f"v_{idx:02d}.aiff"
+    raw = (AUDIO_DIR / f"v_{idx:02d}").with_suffix(tts.preferred_suffix())
+    tts.synthesize(text, raw, voice=VOICE, rate=RATE)
     m4a = AUDIO_DIR / f"v_{idx:02d}.m4a"
-    subprocess.run(["say", "-v", VOICE, "-r", str(RATE), "-o", str(aiff), text], check=True)
     subprocess.run(
-        ["ffmpeg", "-y", "-loglevel", "error", "-i", str(aiff),
+        ["ffmpeg", "-y", "-loglevel", "error", "-i", str(raw),
          "-c:a", "aac", "-b:a", "128k", str(m4a)],
         check=True,
     )
@@ -236,6 +237,7 @@ def synthesize_audio(idx: int, text: str) -> tuple[str, float]:
 
 
 def build():
+    print(f"> {tts.info()}")
     print("> rendering pitch-video slides…")
     slide_paths = write_slides([s for s, _ in SCRIPT], str(SLIDE_DIR))
 
@@ -289,6 +291,7 @@ def build():
     )
 
     manifest = {
+        "backend": tts._resolve_backend(),  # noqa: SLF001
         "voice": VOICE,
         "rate_wpm": RATE,
         "slides": [

@@ -1,18 +1,18 @@
 """Slide rendering toolkit for ProductiveYou marketing assets.
 
 Renders 1920x1080 PNG slides in the dark + warm-orange aesthetic of the
-Monk Mode Activated app. Used by `build_demo.py`, `build_pitch.py` and
-`build_deck.py`.
+Monk Mode Activated app. Used by `build_demo.py`, `build_pitch_video.py`
+and `build_deck.py`.
 
-Pure stdlib + Pillow. No external assets required (fonts are sourced from
-the macOS system).
+Cross-platform (macOS / Linux / Windows). Requires Pillow only — fonts
+are bundled in `marketing/scripts/fonts/` (Inter + JetBrains Mono, both
+SIL OFL 1.1, see fonts/OFL.txt).
 """
 from __future__ import annotations
 
-import colorsys
 import os
-import textwrap
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Iterable
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -33,24 +33,55 @@ GOOD = (108, 198, 138)
 
 
 # ---- Font helpers -----------------------------------------------------------
-HELVETICA = "/System/Library/Fonts/HelveticaNeue.ttc"
-MENLO = "/System/Library/Fonts/Menlo.ttc"
+FONT_DIR = Path(__file__).resolve().parent / "fonts"
+
+INTER_VAR = FONT_DIR / "Inter.ttf"               # variable font, weight axis 100..900
+INTER_ITALIC_VAR = FONT_DIR / "Inter-Italic.ttf"
+JBM_REGULAR = FONT_DIR / "JetBrainsMono-Regular.ttf"
+JBM_BOLD = FONT_DIR / "JetBrainsMono-Bold.ttf"
+
+# Map our semantic "weight" tokens to Inter named instances
+_WEIGHT_INSTANCE = {
+    "ultralight": "Thin",
+    "light": "Light",
+    "regular": "Regular",
+    "medium": "Medium",
+    "semibold": "SemiBold",
+    "bold": "Bold",
+    "extrabold": "ExtraBold",
+    "black": "Black",
+}
 
 
-def font(size: int, *, weight: str = "regular") -> ImageFont.FreeTypeFont:
-    idx = {
-        "regular": 0,
-        "bold": 1,
-        "italic": 2,
-        "bold_italic": 3,
-        "ultralight": 5,
-        "light": 7,
-    }.get(weight, 0)
-    return ImageFont.truetype(HELVETICA, size, index=idx)
+def _check_fonts() -> None:
+    missing = [str(p) for p in (INTER_VAR, INTER_ITALIC_VAR, JBM_REGULAR, JBM_BOLD) if not p.exists()]
+    if missing:
+        raise FileNotFoundError(
+            "Bundled fonts not found:\n  - "
+            + "\n  - ".join(missing)
+            + "\nRun: python3 marketing/scripts/fetch_fonts.py"
+        )
+
+
+def font(size: int, *, weight: str = "regular", italic: bool = False) -> ImageFont.FreeTypeFont:
+    """Inter at the given size + weight. Works identically on macOS/Linux/Windows."""
+    _check_fonts()
+    src = INTER_ITALIC_VAR if italic else INTER_VAR
+    f = ImageFont.truetype(str(src), size)
+    inst = _WEIGHT_INSTANCE.get(weight, "Regular")
+    try:
+        f.set_variation_by_name(inst)
+    except Exception:
+        # Fallback for older Pillow: leave default weight
+        pass
+    return f
 
 
 def mono(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(MENLO, size, index=1 if bold else 0)
+    """JetBrains Mono regular/bold."""
+    _check_fonts()
+    src = JBM_BOLD if bold else JBM_REGULAR
+    return ImageFont.truetype(str(src), size)
 
 
 # ---- Drawing helpers --------------------------------------------------------

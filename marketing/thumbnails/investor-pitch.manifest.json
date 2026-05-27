@@ -1,5 +1,6 @@
 {
-  "voice": "Samantha",
+  "backend": "edge",
+  "voice": null,
   "rate_wpm": 170,
   "slides": [
     {
@@ -75,6 +76,6 @@
       "voiceover": "We are raising one point two million seed. Eighteen month runway to two hundred fifty thousand users, one point four million in A R R, and live coach-tier pilots. Visit productive you dot lovable dot app."
     }
   ],
-  "total_duration_s": 142.81,
+  "total_duration_s": 182.16,
   "output": "/Users/aritra.de/Desktop/Cursor Work/productiveyou/marketing/investor-pitch.mp4"
 }

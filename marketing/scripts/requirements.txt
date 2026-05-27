@@ -1,0 +1,6 @@
+# Cross-platform deps for marketing/scripts/*.py
+# Tested on Python 3.9+ on macOS / Linux / Windows.
+
+Pillow>=10.0        # slide rendering (variable-font support requires >=10)
+edge-tts>=7.0       # preferred TTS — free, neural quality, no API key
+pyttsx3>=2.90       # fallback offline TTS (uses native OS engines)

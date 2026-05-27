@@ -30,7 +30,7 @@ A 90-second narrated walkthrough of the product. Click the thumbnail to watch �
 </p>
 
 <p align="center">
-  <a href="./marketing/demo.mp4"><b>▶ marketing/demo.mp4</b></a> · 90s · 1920×1080 · H.264 + AAC · 2.3 MB
+  <a href="./marketing/demo.mp4"><b>▶ marketing/demo.mp4</b></a> · ~104s · 1920×1080 · H.264 + AAC · 2.6 MB
 </p>
 
 <details>
@@ -128,7 +128,7 @@ A narrated walkthrough designed for VCs, angels, and partner intros. Same conten
 </p>
 
 <p align="center">
-  <a href="./marketing/investor-pitch.mp4"><b>▶ marketing/investor-pitch.mp4</b></a> · 143s · 1920×1080 · H.264 + AAC · 3.7 MB
+  <a href="./marketing/investor-pitch.mp4"><b>▶ marketing/investor-pitch.mp4</b></a> · ~182s · 1920×1080 · H.264 + AAC · 4.5 MB
 </p>
 
 <details>
@@ -150,7 +150,13 @@ https://github.com/productdecoded/productiveyou/raw/main/marketing/investor-pitc
 | Productivity lost to depression / anxiety | ~$1T per year (global, pre-COVID baseline) | [WHO mental health team](https://www.who.int/teams/mental-health-and-substance-use) |
 | % of daily behaviour that is habitual | ~40% | Wood, Quinn & Kashy, *JPSP*, 2002 |
 
-The full citations live in [`marketing/README.md`](./marketing/README.md). To regenerate the videos and deck from scratch, see the build instructions in that file.
+The full citations live in [`marketing/README.md`](./marketing/README.md). The build pipeline is **fully cross-platform (macOS / Linux / Windows)** — bundled OFL fonts, free neural TTS via `edge-tts`, no Mac-only dependencies. Regenerate any artefact in three commands:
+
+```sh
+pip install -r marketing/scripts/requirements.txt
+python3 marketing/scripts/fetch_fonts.py
+python3 marketing/scripts/build_demo.py   # or build_pitch_video.py / build_deck.py
+```
 
 ### How the unit economics in the deck were modelled
 
@@ -167,6 +173,85 @@ The full citations live in [`marketing/README.md`](./marketing/README.md). To re
 | LTV / CAC | ~11x | Assumes 24-month average lifetime |
 
 The deck and pitch video frame the **2-year discipline window** as the wedge: nobody else sells a habit-forming product with a 730-day default horizon, in a market where every competitor is optimising for the wrong number (21 days).
+
+---
+
+## Data & security
+
+### Where your data lives
+
+Everything you create in the app — habits, non-negotiables, journal entries, todos, photos — is persisted to a **Supabase** project ([`supabase/config.toml`](./supabase/config.toml), project ID `amnvyfgibwojeuokiean`). Supabase is a managed Postgres + S3-compatible storage platform running on AWS.
+
+| Data | Where it lives | Schema |
+| --- | --- | --- |
+| Profile (display name, custom habits/rules, streak start date, onboarding flag, consistency duration) | `public.profiles` (Postgres) | [migration `20260330193220`](./supabase/migrations/20260330193220_ea08bfa1-775c-48dc-bfe6-0692111e3d5a.sql) |
+| Daily entries (habit checks, non-negotiable checks, journal text/audio refs, todos, completion %) | `public.daily_entries` (Postgres, JSONB columns) | [migration `20260328110127`](./supabase/migrations/20260328110127_b7c51dd6-f990-46b6-8723-6f50acfe4fc7.sql) |
+| Journal photos | `storage.objects` in the **private** `journal-photos` bucket, S3-backed | [migration `20260402143346`](./supabase/migrations/20260402143346_af6722a8-9de9-4f21-8cb3-f7673f8b6979.sql) |
+| Auth identities, password hashes, OAuth tokens, refresh tokens | `auth.users` (managed by Supabase Auth) | n/a — Supabase-managed |
+
+The Chrome extension keeps a **separate, local-only** copy in `chrome.storage.local`. It does not sync to Supabase today.
+
+### Encryption in transit
+
+- All app ↔ Supabase traffic is **HTTPS / TLS 1.2+** — `VITE_SUPABASE_URL` is `https://amnvyfgibwojeuokiean.supabase.co`.
+- Realtime websockets (TanStack Query subscriptions, Supabase Realtime) go over **WSS** (TLS-encrypted).
+- Storage uploads to the private bucket are signed and tunneled over HTTPS.
+- Auth flows (email magic links, OAuth callbacks) use HTTPS end-to-end.
+
+Reference: [Supabase Security overview](https://supabase.com/security) — *"All customer data is encrypted at rest with AES-256 and in transit via TLS."*
+
+### Encryption at rest
+
+Supabase encrypts everything on disk by default; it is not user-configurable and cannot be disabled:
+
+| Layer | Algorithm | Scope |
+| --- | --- | --- |
+| Postgres data files, indexes, WAL | **AES-256** | All `public.*` tables incl. profiles, daily_entries |
+| Daily backups + PITR snapshots | **AES-256** | All databases |
+| Storage objects (journal photos, future audio) | **AES-256** (SSE) | `journal-photos` bucket, S3-backed |
+| Temporary files | **AES-256** | Sort spills, vacuum scratch space |
+
+Reference: [Supabase Data Encryption docs](https://supabase.com/docs/guides/platform/security#encryption).
+
+### Authorization (row-level security)
+
+Every table is protected by **Row Level Security (RLS) policies** enforced inside Postgres, not at the application layer. The browser holds a short-lived JWT issued by Supabase Auth, and every query Supabase runs is scoped to `auth.uid() = user_id`. Concretely, from the migrations:
+
+```sql
+-- public.profiles
+CREATE POLICY "Users can read own profile" ON public.profiles
+  FOR SELECT TO authenticated USING (user_id = auth.uid());
+
+-- public.daily_entries
+CREATE POLICY "Users can read own entries" ON public.daily_entries
+  FOR SELECT TO authenticated USING (user_id = auth.uid());
+CREATE POLICY "Users can insert own entries" ON public.daily_entries
+  FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
+-- + UPDATE, DELETE with the same predicate
+
+-- storage.objects (private journal-photos bucket)
+CREATE POLICY "Authenticated users can read own journal photos"
+  ON storage.objects FOR SELECT TO authenticated USING (
+    bucket_id = 'journal-photos'
+    AND (storage.foldername(name))[1] = auth.uid()::text
+  );
+```
+
+The journal-photos bucket was [explicitly flipped from public to private](./supabase/migrations/20260402143346_af6722a8-9de9-4f21-8cb3-f7673f8b6979.sql) and now requires every read/write to match the user's own UUID prefix in the object path.
+
+### Keys & secrets
+
+| Key | Type | Where it lives | Safe to expose? |
+| --- | --- | --- | --- |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase **anon JWT** | `.env`, bundled into the browser | **Yes** — it carries no admin rights and is gated by RLS |
+| `VITE_SUPABASE_URL` | Project endpoint | `.env`, browser bundle | **Yes** — it's a per-project subdomain, not a secret |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase **service role** (bypasses RLS) | **Never in this repo or the browser** — server-side only | **No** |
+
+If you fork this repo and reuse the bundled `.env`, you are reusing **someone else's Supabase project**. Provision your own at https://supabase.com/dashboard, run the migrations under `supabase/`, and update the three `VITE_*` variables.
+
+### What is **not** end-to-end encrypted
+
+Be honest with users: Supabase (and AWS underneath) can technically read the rows because the encryption keys are platform-managed, not user-held. If true zero-knowledge is on the roadmap, the cleanest path is client-side encryption (e.g. libsodium / WebCrypto) of journal text + photos before upload, with the key derived from the user's password and never sent to Supabase. **Not implemented today** — call it out before pitching this to security-conscious enterprise buyers.
 
 ---
 
