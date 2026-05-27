@@ -12,9 +12,10 @@ the pipeline has **no Mac-only dependencies**.
 | [`investor-pitch.mp4`](./investor-pitch.mp4) | ~3-minute narrated investor walkthrough | ~182s · 4.5 MB |
 | [`pitch-deck.pdf`](./pitch-deck.pdf) | 15-slide investor deck (problem → solution → TAM → economics → ask) | 15 pages · 1.7 MB |
 | [`downloads/monk-mode-chrome-extension.zip`](./downloads/monk-mode-chrome-extension.zip) | One-zip download of the Chrome extension — drop into `chrome://extensions/` as **Load unpacked** | 18 KB |
-| [`scripts/build-apk.sh`](./scripts/build-apk.sh) | Builds a sideloadable Android `.apk` from the live PWA via Bubblewrap CLI. First run pulls JDK + Android SDK (~10 min), subsequent runs ~30 s | shell script |
+| [`downloads/monk-mode-activated.apk`](./downloads/monk-mode-activated.apk) | Prebuilt, release-signed Trusted Web Activity for Android. Sideload-ready — wraps the live `productiveyou.lovable.app` PWA. Package ID `app.productiveyou.twa`, signed with SHA-256 fingerprint `78:DE:AD:DB:0C:E0:BA:D4:1B:F6:02:77:1C:6B:D3:4F:6F:01:95:6A:07:04:B2:11:BB:CE:2D:83:4C:B1:A7:27` (matches `public/.well-known/assetlinks.json`) | 1.5 MB |
+| [`scripts/build-apk.sh`](./scripts/build-apk.sh) + [`scripts/scaffold-twa.mjs`](./scripts/scaffold-twa.mjs) | Fully non-interactive APK rebuild pipeline (uses Bubblewrap + Gradle). First run ~10 min, subsequent runs ~30 s | shell + Node |
 | [`thumbnails/`](./thumbnails) | Static PNG cover frames + voiceover manifests | — |
-| [`scripts/`](./scripts) | Cross-platform Python build scripts + bundled fonts | — |
+| [`scripts/`](./scripts) | Cross-platform Python + Node build scripts + bundled fonts | — |
 
 ## Quickstart (any OS)
 

@@ -1,78 +1,151 @@
 #!/usr/bin/env bash
 #
-# build-apk.sh — generate a Trusted-Web-Activity .apk for Monk Mode Activated
+# build-apk.sh — fully non-interactive Android APK build for Monk Mode Activated.
 #
-# Wraps the live PWA at https://productiveyou.lovable.app inside a thin Android
-# package using Google's Bubblewrap CLI. Output lands in marketing/downloads/.
+# Wraps the live PWA at https://productiveyou.lovable.app inside an Android
+# Trusted Web Activity package using Bubblewrap + Gradle. Output lands in
+# marketing/downloads/monk-mode-activated.apk.
 #
 # Prereqs (one-time on the build machine):
-#   - macOS or Linux
 #   - Node.js 18+
-#   - Java JDK 17  (macOS: `brew install openjdk@17`)
-#   - Android cmdline-tools (Bubblewrap can auto-install on first run)
+#   - Java JDK 17 (Temurin recommended)
+#   - Android cmdline-tools  (run `sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"`)
+#   - @bubblewrap/cli installed globally: `npm i -g @bubblewrap/cli`
 #
-# Typical first-run time: ~10 min (downloads JDK + Android SDK).
-# Subsequent runs: ~30 s.
+# Required env (defaults in parens):
+#   JAVA_HOME                          (must point at the JDK *root*, e.g.
+#                                       ~/.local/jdk/jdk-17.0.19+10 on macOS —
+#                                       Bubblewrap appends Contents/Home itself)
+#   ANDROID_HOME                       (Android SDK root)
+#   BUBBLEWRAP_KEYSTORE_PASSWORD       (no default; required)
+#   BUBBLEWRAP_KEY_PASSWORD            (no default; required)
+#   KEYSTORE_PATH                      (default: ./.apk-build/twa/android.keystore;
+#                                       set to an out-of-repo path to reuse the same
+#                                       signing identity across rebuilds)
+#   PACKAGE_ID                         (default: app.productiveyou.twa)
+#
+# Typical timings:
+#   * First run: ~10 min (Gradle + dep cache download, ~700 MB)
+#   * Subsequent runs: ~30 s
 #
 # Usage:
-#   ./marketing/scripts/build-apk.sh                    # release-debug APK
-#   ./marketing/scripts/build-apk.sh --release          # signed release APK (prompts for keystore)
-#
-# The output APK is sideloadable on any Android device with "Install unknown
-# apps" enabled — no Play Store required.
+#   ./marketing/scripts/build-apk.sh
 
 set -euo pipefail
 
-PWA_URL="${PWA_URL:-https://productiveyou.lovable.app}"
-PWA_MANIFEST="${PWA_MANIFEST:-$PWA_URL/manifest.webmanifest}"
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 BUILD_DIR="${BUILD_DIR:-$REPO_ROOT/.apk-build}"
-OUT_DIR="${OUT_DIR:-$REPO_ROOT/marketing/downloads}"
+TWA_DIR="$BUILD_DIR/twa"
+OUT_DIR="$REPO_ROOT/marketing/downloads"
 PACKAGE_ID="${PACKAGE_ID:-app.productiveyou.twa}"
+PWA_HOST="${PWA_HOST:-productiveyou.lovable.app}"
+PWA_URL="https://$PWA_HOST"
+PORT="${PORT:-8765}"
 
-mode="debug"
-if [[ "${1:-}" == "--release" ]]; then
-  mode="release"
-fi
+# Sanity check env
+for var in JAVA_HOME ANDROID_HOME BUBBLEWRAP_KEYSTORE_PASSWORD BUBBLEWRAP_KEY_PASSWORD; do
+  if [[ -z "${!var:-}" ]]; then
+    echo "✗ $var is required but not set." >&2
+    exit 1
+  fi
+done
 
-echo "▶ Build mode:   $mode"
-echo "▶ PWA URL:      $PWA_URL"
-echo "▶ Manifest:     $PWA_MANIFEST"
-echo "▶ Build dir:    $BUILD_DIR"
-echo "▶ Output dir:   $OUT_DIR"
-echo "▶ Package id:   $PACKAGE_ID"
+echo "▶ Repo:        $REPO_ROOT"
+echo "▶ Build dir:   $BUILD_DIR"
+echo "▶ Package ID:  $PACKAGE_ID"
+echo "▶ PWA URL:     $PWA_URL"
+echo "▶ JAVA_HOME:   $JAVA_HOME"
+echo "▶ ANDROID_HOME:$ANDROID_HOME"
 echo
 
+# Pre-populate Bubblewrap's config so it doesn't try to interactively set paths
+mkdir -p "$HOME/.bubblewrap"
+cat > "$HOME/.bubblewrap/config.json" <<EOF
+{
+  "jdkPath": "$JAVA_HOME",
+  "androidSdkPath": "$ANDROID_HOME"
+}
+EOF
+
+# Bubblewrap's path validator expects $ANDROID_HOME/tools or /bin to exist;
+# modern cmdline-tools layouts don't have either at the root, so symlink one.
+if [[ ! -e "$ANDROID_HOME/tools" && -d "$ANDROID_HOME/cmdline-tools/latest" ]]; then
+  ln -sf "$ANDROID_HOME/cmdline-tools/latest" "$ANDROID_HOME/tools"
+  echo "✓ added $ANDROID_HOME/tools symlink for Bubblewrap path check"
+fi
+
+# 1) Stage manifest + icons for the local web-manifest server.
+echo "→ staging manifest + icons at $BUILD_DIR/"
 mkdir -p "$BUILD_DIR" "$OUT_DIR"
+cat > "$BUILD_DIR/manifest.webmanifest" <<EOF
+{
+  "name": "Monk Mode Activated",
+  "short_name": "Monk Mode",
+  "description": "A discipline tracker built on behavioural science. Habits, non-negotiables, journal, streak, and a multi-year horizon.",
+  "id": "$PWA_URL/?source=twa",
+  "start_url": "$PWA_URL/?source=twa",
+  "scope": "$PWA_URL/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0e",
+  "theme_color": "#fcad29",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
+EOF
+rm -rf "$BUILD_DIR/icons"
+cp -r "$REPO_ROOT/public/icons" "$BUILD_DIR/icons"
 
-# 1) Ensure Bubblewrap is installed globally
-if ! command -v bubblewrap >/dev/null 2>&1; then
-  echo "→ Installing @bubblewrap/cli globally …"
-  npm install -g @bubblewrap/cli
+# 2) Start a local HTTP server so Bubblewrap can fetch manifest+icons
+echo "→ serving manifest at http://localhost:$PORT …"
+( cd "$BUILD_DIR" && python3 -m http.server "$PORT" > "$BUILD_DIR/http.log" 2>&1 ) &
+HTTP_PID=$!
+trap "kill $HTTP_PID 2>/dev/null || true" EXIT
+sleep 1
+
+# 3) Scaffold the TWA project (writes twa-manifest.json + Android sources + signing key)
+rm -rf "$TWA_DIR"
+mkdir -p "$TWA_DIR"
+WEB_MANIFEST_URL="http://localhost:$PORT/manifest.webmanifest" \
+TARGET_DIR="$TWA_DIR" \
+PACKAGE_ID="$PACKAGE_ID" \
+node "$REPO_ROOT/marketing/scripts/scaffold-twa.mjs"
+
+# 4) Reuse an existing keystore if KEYSTORE_PATH is set (keeps the same app
+#    identity across rebuilds — Android demands the cert match for upgrades).
+if [[ -n "${KEYSTORE_PATH:-}" && -f "$KEYSTORE_PATH" && "$KEYSTORE_PATH" != "$TWA_DIR/android.keystore" ]]; then
+  cp "$KEYSTORE_PATH" "$TWA_DIR/android.keystore"
+  echo "✓ reused signing key from $KEYSTORE_PATH"
 fi
 
-# 2) Initialise the TWA project the first time
-if [[ ! -f "$BUILD_DIR/twa-manifest.json" ]]; then
-  echo "→ bubblewrap init (this downloads JDK + Android SDK on first run; ~10 min) …"
-  ( cd "$BUILD_DIR" && bubblewrap init --manifest="$PWA_MANIFEST" )
-else
-  echo "→ Existing TWA project found, skipping init."
-fi
+# 5) Compute the sha1 checksum of twa-manifest.json (with no trailing newline)
+#    so `bubblewrap build` doesn't prompt "manifest changed?"
+node -e "
+const c=require('crypto'),f=require('fs');
+const sum=c.createHash('sha1').update(f.readFileSync('$TWA_DIR/twa-manifest.json')).digest('hex');
+f.writeFileSync('$TWA_DIR/manifest-checksum.txt', sum);
+"
 
-# 3) Build
-echo "→ bubblewrap build ($mode) …"
-( cd "$BUILD_DIR" && bubblewrap build )
+# 6) Build (non-interactive thanks to BUBBLEWRAP_*_PASSWORD env vars)
+echo "→ bubblewrap build (Gradle will download dependencies on first run; ~5-10 min) …"
+( cd "$TWA_DIR" && bubblewrap build --skipPwaValidation </dev/null )
 
-# 4) Copy the resulting APK to marketing/downloads/
-APK_SRC="$(find "$BUILD_DIR" -name '*.apk' -type f | head -1)"
-if [[ -z "$APK_SRC" ]]; then
-  echo "✗ Build produced no APK; inspect $BUILD_DIR" >&2
+# 7) Stage the APK into marketing/downloads/
+APK_SRC="$TWA_DIR/app-release-signed.apk"
+APK_OUT="$OUT_DIR/monk-mode-activated.apk"
+if [[ ! -f "$APK_SRC" ]]; then
+  echo "✗ APK was not produced; inspect $TWA_DIR" >&2
   exit 1
 fi
-APK_OUT="$OUT_DIR/monk-mode-activated-${mode}.apk"
 cp "$APK_SRC" "$APK_OUT"
 echo
 echo "✓ APK ready: $APK_OUT  ($(du -h "$APK_OUT" | cut -f1))"
-echo "  Sideload on any Android device:"
-echo "  1. Enable Settings » Apps » Special access » Install unknown apps for your file-manager / Chrome"
-echo "  2. Open the .apk on the device, tap Install."
+echo
+echo "Install on Android:"
+echo "  1. Copy $APK_OUT to your device (AirDrop / Drive / email / USB)"
+echo "  2. On the device, enable Settings » Apps » Install unknown apps for the file-manager"
+echo "  3. Tap the .apk, tap Install. Done."

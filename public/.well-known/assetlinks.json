@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.productiveyou.twa",
+      "sha256_cert_fingerprints": [
+        "78:DE:AD:DB:0C:E0:BA:D4:1B:F6:02:77:1C:6B:D3:4F:6F:01:95:6A:07:04:B2:11:BB:CE:2D:83:4C:B1:A7:27"
+      ]
+    }
+  }
+]

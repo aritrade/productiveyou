@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Android / TWA build outputs (Gradle dl + signing keystore + generated project)
+.apk-build/
+*.keystore
+*.jks

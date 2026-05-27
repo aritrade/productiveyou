@@ -21,13 +21,15 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 
 ## Get the app — install on any device
 
-The app is a Progressive Web App, which means you can install it on **iPhone, Android, Mac, Windows, Linux, or ChromeOS** with no app store, no developer account, and no APK download — just open the site and tap install. We also ship a Chrome extension and a fully-scripted path to build a sideloadable Android `.apk`.
+The app is a Progressive Web App **plus** a sideloadable Android `.apk`. You can install it on **iPhone, Android, Mac, Windows, Linux, or ChromeOS** with no app store and no developer account — and the prebuilt Android package is right in the repo:
+
+> **» [Download `monk-mode-activated.apk`](./marketing/downloads/monk-mode-activated.apk) (1.5 MB)** — signed Trusted Web Activity, sideload-ready
 
 | Device | Path | Time | Cost |
 | --- | --- | --- | --- |
+| **Android phone / tablet** | Download the [APK](./marketing/downloads/monk-mode-activated.apk) above » open » **Install** | 30 s | Free |
+| **Android (no download)** | Chrome » menu » **Install app** | 10 s | Free |
 | **iPhone / iPad** | Safari » Share » **Add to Home Screen** | 10 s | Free |
-| **Android phone / tablet** | Chrome » menu » **Install app** | 10 s | Free |
-| **Android `.apk` sideload** | Build once with [`marketing/scripts/build-apk.sh`](./marketing/scripts/build-apk.sh) or use [PWA Builder](https://www.pwabuilder.com/) | ~10 min one-time | Free |
 | **macOS / Windows / Linux** | Chrome / Edge / Brave URL bar » install icon | 5 s | Free |
 | **Any desktop browser** | Just visit [productiveyou.lovable.app](https://productiveyou.lovable.app) | 0 s | Free |
 | **Chrome extension** | [Load unpacked](./chrome-extension) or grab [`monk-mode-chrome-extension.zip`](./marketing/downloads/monk-mode-chrome-extension.zip) | 30 s | Free |
@@ -44,31 +46,46 @@ What you get on iOS: full-screen launch, custom icon, splash screen, offline app
 
 ### Android phone & tablet (free, no Play Store)
 
-**Option A — install the PWA from Chrome (recommended, 10 s)**
+**Option A — sideload the prebuilt APK _(easiest, recommended)_**
+
+1. **Download** [`marketing/downloads/monk-mode-activated.apk`](./marketing/downloads/monk-mode-activated.apk) (1.5 MB, release-signed Trusted Web Activity).
+2. Get it onto your phone — AirDrop to a friend's Android, email it to yourself, Google Drive, USB transfer, anything.
+3. On the phone, open the `.apk` from your file manager. First time Android may prompt **Settings » Apps » Special access » Install unknown apps** — grant permission for your file manager (or Chrome, Files, Drive — whichever opened the .apk).
+4. Tap **Install** » **Open**.
+5. The ⚡ Monk Mode icon now lives in your app drawer. Launching it opens the full Lovable web app in a Chrome Custom Tab; you'll see a Chrome version banner the very first time, never again.
+
+The APK is a Trusted Web Activity — basically a thin Android wrapper that loads `https://productiveyou.lovable.app` full-screen, with the same Supabase auth + offline app-shell behaviour as the PWA. Sign-in, journal, photo uploads, everything works identically to the website. Note the URL bar will be hidden once Lovable redeploys the `/.well-known/assetlinks.json` we shipped (see [Trusted Web Activity verification](#trusted-web-activity-verification) below).
+
+**Option B — install the PWA straight from Chrome (no APK)**
 
 1. Open **Chrome** on Android and go to **https://productiveyou.lovable.app**.
 2. Tap the **⋮ menu** » **Install app** (or "Add to home screen" on older Chrome versions).
-3. Confirm. The ⚡ Monk Mode icon shows up in your app drawer, full-screen, with splash + offline app-shell support.
+3. Confirm. The icon shows up in your app drawer, full-screen, with splash + offline app-shell support.
 
-**Option B — sideload the `.apk`**
-
-If you'd rather distribute a real Android package (e.g. share with friends without sending them a URL):
+**Option C — rebuild the APK yourself**
 
 ```bash
-# On any Mac/Linux/Windows dev machine with Node 18+ and JDK 17
+# Prereqs: Node 18+, Java JDK 17, Android cmdline-tools, @bubblewrap/cli installed globally
+export JAVA_HOME=...                   # e.g. ~/.local/jdk/jdk-17.0.19+10 on macOS
+export ANDROID_HOME=...                # Android SDK root
+export BUBBLEWRAP_KEYSTORE_PASSWORD=... # set yours (or reuse the existing keystore)
+export BUBBLEWRAP_KEY_PASSWORD=...
+export KEYSTORE_PATH=...               # optional: reuse an existing keystore to preserve the app's signing identity
 ./marketing/scripts/build-apk.sh
-# » produces marketing/downloads/monk-mode-activated-debug.apk
+# » produces marketing/downloads/monk-mode-activated.apk
 ```
 
-The script uses Google's official [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) CLI to wrap the live PWA in a Trusted Web Activity APK. First run downloads the JDK + Android SDK automatically (~10 min, ~1 GB), subsequent runs take ~30 s. The resulting APK is signed with a debug certificate; for a release-signed APK pass `--release` and follow the keystore prompts.
+First run downloads ~700 MB (Gradle + AndroidX deps), subsequent runs ~30 s. The script is fully non-interactive — see the file header for the full env-var spec.
 
-**Option C — zero-install web tool** (no local SDK needed): drop the URL `https://productiveyou.lovable.app` into [pwabuilder.com](https://www.pwabuilder.com/), click **Package for stores** » **Android**, choose **Other / Sideload (signed)**, download. Same TWA approach, generated in their cloud.
+### Trusted Web Activity verification
 
-To install the APK on a device:
+The committed APK is signed with package ID `app.productiveyou.twa`. The matching Digital Asset Link sits at [`public/.well-known/assetlinks.json`](./public/.well-known/assetlinks.json). Once Lovable redeploys, the file is served at `https://productiveyou.lovable.app/.well-known/assetlinks.json` and Chrome verifies the TWA on first launch — at which point the URL bar disappears and the app runs in proper full-screen "trusted" mode. **No additional config needed on your end.** If you ever rebuild with a new signing key, regenerate the fingerprint with:
 
-1. On the phone, enable **Settings » Apps » Special access » Install unknown apps** for the app you'll use to open the `.apk` (Chrome, Files, Drive, etc).
-2. Open the `.apk` on the device, tap **Install**.
-3. First launch shows the Chrome version banner once (TWA requirement) and never again.
+```bash
+keytool -list -v -keystore <your.keystore> -alias android -storepass <pw> | grep SHA256
+```
+
+…and replace the value in `public/.well-known/assetlinks.json`.
 
 ### macOS, Windows, Linux, ChromeOS desktop
 
@@ -371,13 +388,17 @@ Be honest with users: Supabase (and AWS underneath) can technically read the row
 │   ├── investor-pitch.mp4
 │   ├── pitch-deck.pdf
 │   ├── README.md        # How to regenerate everything
-│   ├── downloads/       # Prebuilt extension .zip (+ APK after build)
-│   ├── scripts/         # slidekit + build_demo + build_pitch_video + build_deck + build-apk
+│   ├── downloads/
+│   │   ├── monk-mode-activated.apk         # 1.5 MB signed Android TWA, ready to sideload
+│   │   └── monk-mode-chrome-extension.zip  # 18 KB Chrome extension bundle
+│   ├── scripts/         # slidekit + build_demo + build_pitch_video + build_deck + build-apk + scaffold-twa
 │   └── thumbnails/      # Cover frames + voiceover manifests
 ├── public/              # Static assets served as-is at site root
 │   ├── manifest.webmanifest  # PWA manifest (iOS + Android + desktop install)
 │   ├── sw.js                 # Service worker (offline app-shell, no Supabase caching)
 │   ├── icons/                # PWA icons 72/96/128/144/152/192/384/512 + maskable + apple-touch
+│   ├── .well-known/
+│   │   └── assetlinks.json   # Digital Asset Link verifying the Android TWA → full-screen mode
 │   └── favicon.ico
 ├── src/
 │   ├── components/      # Habits, journal, streak, collectibles, UI primitives
