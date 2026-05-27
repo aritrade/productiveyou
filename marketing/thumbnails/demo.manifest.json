@@ -5,65 +5,101 @@
   "slides": [
     {
       "index": 1,
-      "kicker": "DEMO \u00b7 1 / 10",
+      "kicker": "DEMO \u00b7 1 / 16",
       "title": "Monk Mode Activated.",
-      "voiceover": "Meet Monk Mode Activated \u2014 a daily discipline tracker built for the long game."
+      "voiceover": "Meet Monk Mode Activated \u2014 a discipline tracker built around behavioral science, not the twenty-one day myth."
     },
     {
       "index": 2,
-      "kicker": "WHY THIS EXISTS \u00b7 2 / 10",
+      "kicker": "WHY THIS EXISTS \u00b7 2 / 16",
       "title": "Most habit apps fail you by day 14.",
-      "voiceover": "Most habit apps fail you around day fourteen. Streak resets, guilt, quit, repeat. Monk Mode treats discipline as a two-year project, not a twenty-one day stunt."
+      "voiceover": "Most habit apps fail you around day fourteen. Streak resets, guilt, quit, repeat. Monk Mode treats discipline as a multi-year project, not a twenty-one day stunt."
     },
     {
       "index": 3,
-      "kicker": "FEATURE \u00b7 3 / 10",
-      "title": "Non-Negotiables & Daily Habits",
-      "voiceover": "At the core are non-negotiables \u2014 the things you simply refuse to do \u2014 and daily habits, the things you commit to. Tap a box and your completion percentage updates instantly."
+      "kicker": "FEATURE \u00b7 3 / 16",
+      "title": "Pick Your Non-Negotiables.",
+      "voiceover": "Pick your own non-negotiables. The rules you refuse to break \u2014 fully customizable per user. No smoking, no doomscroll, no booze. Whatever your hard floor is, you define it."
     },
     {
       "index": 4,
-      "kicker": "FEATURE \u00b7 4 / 10",
+      "kicker": "FEATURE \u00b7 4 / 16",
+      "title": "Build Your Habit Stack.",
+      "voiceover": "Build your own habit stack. Workout, meditate, deep work, cold shower \u2014 or whatever moves you forward. One tap per habit. Completion percentage updates instantly."
+    },
+    {
+      "index": 5,
+      "kicker": "FEATURE \u00b7 5 / 16",
+      "title": "Choose Your Horizon.",
+      "voiceover": "Choose how long you commit. One month sprint, three month challenge, six month commitment, one year transformation, or two year monk-mode mastery. Your horizon, your call."
+    },
+    {
+      "index": 6,
+      "kicker": "FEATURE \u00b7 6 / 16",
+      "title": "Daily Todo & Task Tracker.",
+      "voiceover": "A built-in todo list and task tracker for the day. Add fast, check off fast, resets cleanly at midnight so tomorrow is a fresh start."
+    },
+    {
+      "index": 7,
+      "kicker": "FEATURE \u00b7 7 / 16",
       "title": "Journal. Text, Voice, Photos.",
       "voiceover": "Journal your day in text, voice, or photos with captions. Whatever medium your day deserves \u2014 Monk Mode catches it."
     },
     {
-      "index": 5,
-      "kicker": "FEATURE \u00b7 5 / 10",
-      "title": "The 2-Year Streak Tracker",
-      "voiceover": "The 2-year streak grid turns daily discipline into a visual identity. Every tile is a day. Every color is a percentage. Skip a day \u2014 the streak survives."
-    },
-    {
-      "index": 6,
-      "kicker": "FEATURE \u00b7 6 / 10",
-      "title": "Wrapped \u2014 Your Year in Discipline",
-      "voiceover": "At year-end, Wrapped builds a Spotify-style recap of your discipline \u2014 best month, longest streak, most-honored habit, and shareable cards."
-    },
-    {
-      "index": 7,
-      "kicker": "FEATURE \u00b7 7 / 10",
-      "title": "Chrome Extension Companion",
-      "voiceover": "A companion Chrome extension hijacks your new tab page \u2014 turning the place willpower normally dies into a live dashboard of your streak."
-    },
-    {
       "index": 8,
-      "kicker": "UNDER THE HOOD \u00b7 8 / 10",
-      "title": "Built modern, shipped fast.",
-      "voiceover": "Under the hood: Vite, React eighteen, TypeScript, Tailwind, shadcn UI. Supabase for auth, database and storage. Shipped on Lovable, deployed on every push."
+      "kicker": "FEATURE \u00b7 8 / 16",
+      "title": "The Multi-Year Streak Grid.",
+      "voiceover": "The streak grid turns daily discipline into a visual identity. Every tile is a day. Every color is a percentage. Skip a day \u2014 the streak survives."
     },
     {
       "index": 9,
-      "kicker": "WHY IT WORKS \u00b7 9 / 10",
-      "title": "",
-      "voiceover": "Behavioral science says it takes an average of sixty-six days to form a habit \u2014 not twenty-one. Monk Mode gives you seven hundred and thirty."
+      "kicker": "FEATURE \u00b7 9 / 16",
+      "title": "History + Downloadable PDF Reports.",
+      "voiceover": "Open the History view to browse any past day in detail. Pick a date range. Download a Summary or Detailed PDF report to analyze the patterns and act on them."
     },
     {
       "index": 10,
+      "kicker": "FEATURE \u00b7 10 / 16",
+      "title": "Collectibles. Rewards For Every Step.",
+      "voiceover": "Collectibles reward you for every step you take. Unlockable badges at day seven, thirty, sixty-six, one hundred, and three hundred sixty-five. Classy rewards. No confetti spam."
+    },
+    {
+      "index": 11,
+      "kicker": "FEATURE \u00b7 11 / 16",
+      "title": "Wrapped \u2014 Your Year In Discipline.",
+      "voiceover": "At year-end, Wrapped builds a Spotify-style recap of your discipline. Best month, longest streak, most-honored habit, and shareable cards."
+    },
+    {
+      "index": 12,
+      "kicker": "FEATURE \u00b7 12 / 16",
+      "title": "Light Mode. Dark Mode. Smooth Switch.",
+      "voiceover": "Light mode and dark mode, both first-class. Smooth animated switch \u2014 no jarring flash. Your theme preference travels with your account."
+    },
+    {
+      "index": 13,
+      "kicker": "YOUR DATA \u00b7 13 / 16",
+      "title": "",
+      "voiceover": "Log in with your account and everything syncs to an encrypted database. AES two fifty six at rest. T L S in transit. Row level security so only you can read your rows. Your discipline, encrypted end to database."
+    },
+    {
+      "index": 14,
+      "kicker": "FEATURE \u00b7 14 / 16",
+      "title": "Chrome Extension Companion.",
+      "voiceover": "A companion Chrome extension hijacks your new-tab page \u2014 turning the place willpower normally dies into a live dashboard of your streak."
+    },
+    {
+      "index": 15,
+      "kicker": "WHY IT WORKS \u00b7 15 / 16",
+      "title": "",
+      "voiceover": "Behavioral science says it takes an average of sixty-six days to form a habit \u2014 not twenty-one. Monk Mode gives you up to seven hundred and thirty."
+    },
+    {
+      "index": 16,
       "kicker": "",
       "title": "Start Day 1.",
       "voiceover": "Open Productive You dot Lovable dot app, pick your non-negotiables, and start day one."
     }
   ],
-  "total_duration_s": 103.92,
+  "total_duration_s": 190.13,
   "output": "/Users/aritra.de/Desktop/Cursor Work/productiveyou/marketing/demo.mp4"
 }

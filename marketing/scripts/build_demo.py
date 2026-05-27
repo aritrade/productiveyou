@@ -27,17 +27,18 @@ THUMB = ROOT / "thumbnails" / "demo.png"
 
 
 # ---- Script: each (slide, voiceover) pair -------------------------------
-N = 10
+N = 16
 SCRIPT: list[tuple[Slide, str]] = [
     (
         Slide(
             kind="title",
             kicker=f"DEMO · 1 / {N}",
             title="Monk Mode Activated.",
-            subtitle="A daily-discipline tracker built for the long game.",
+            subtitle="A discipline tracker built around behavioral science — not the 21-day myth.",
             page_label=f"1 / {N}",
         ),
-        "Meet Monk Mode Activated — a daily discipline tracker built for the long game.",
+        "Meet Monk Mode Activated — a discipline tracker built around behavioral science, "
+        "not the twenty-one day myth.",
     ),
     (
         Slide(
@@ -46,35 +47,83 @@ SCRIPT: list[tuple[Slide, str]] = [
             title="Most habit apps fail you by day 14.",
             subtitle="Streak resets. Guilt. Quit. Repeat.",
             bullets=[
-                "We treat habits like a 2-year project, not a 21-day stunt.",
-                "Non-negotiables sit above habits — what you refuse to do.",
+                "We treat habits as a multi-year project, not a 21-day stunt.",
+                "Non-negotiables sit above habits — your hard floor.",
                 "One missed day is logged, never punished.",
             ],
             page_label=f"2 / {N}",
         ),
         "Most habit apps fail you around day fourteen. Streak resets, guilt, quit, repeat. "
-        "Monk Mode treats discipline as a two-year project, not a twenty-one day stunt.",
+        "Monk Mode treats discipline as a multi-year project, not a twenty-one day stunt.",
     ),
     (
         Slide(
             kind="feature",
             kicker=f"FEATURE · 3 / {N}",
-            title="Non-Negotiables & Daily Habits",
-            subtitle="The two-layer system your future self will thank you for.",
+            title="Pick Your Non-Negotiables.",
+            subtitle="Your rules. Your hard floor. Nobody else's template.",
             bullets=[
-                "Non-Negotiables — your hard floor. No smoking. No doomscroll. No exceptions.",
-                "Daily Habits — your upward push. Workout, meditate, deep work, sleep.",
-                "Completion percentage updates the instant you check a box.",
+                "Fully customizable — no smoking, no doomscroll, no skipping workouts, no booze.",
+                "Sits above habits all day. The first thing you see, the last thing you check.",
+                "Every user picks their own list at onboarding — and edits it any time.",
             ],
             page_label=f"3 / {N}",
         ),
-        "At the core are non-negotiables — the things you simply refuse to do — and daily habits, "
-        "the things you commit to. Tap a box and your completion percentage updates instantly.",
+        "Pick your own non-negotiables. The rules you refuse to break — fully customizable per user. "
+        "No smoking, no doomscroll, no booze. Whatever your hard floor is, you define it.",
     ),
     (
         Slide(
             kind="feature",
             kicker=f"FEATURE · 4 / {N}",
+            title="Build Your Habit Stack.",
+            subtitle="Your upward push. The things you commit to, every single day.",
+            bullets=[
+                "Workout, meditate, deep work, cold shower, read 30 minutes — or anything you choose.",
+                "Each habit is one tap. Completion percentage updates instantly.",
+                "Stack changes? Edit anytime. The streak doesn't care, only the consistency does.",
+            ],
+            page_label=f"4 / {N}",
+        ),
+        "Build your own habit stack. Workout, meditate, deep work, cold shower — or whatever moves you "
+        "forward. One tap per habit. Completion percentage updates instantly.",
+    ),
+    (
+        Slide(
+            kind="feature",
+            kicker=f"FEATURE · 5 / {N}",
+            title="Choose Your Horizon.",
+            subtitle="From a 1-month sprint to a 2-year monk-mode mastery — your call.",
+            bullets=[
+                "1 month — quick sprint.    3 months — quarter challenge.",
+                "6 months — half-year commitment.    1 year — full transformation.",
+                "2 years — monk-mode mastery (default).",
+            ],
+            page_label=f"5 / {N}",
+        ),
+        "Choose how long you commit. One month sprint, three month challenge, six month commitment, "
+        "one year transformation, or two year monk-mode mastery. Your horizon, your call.",
+    ),
+    (
+        Slide(
+            kind="feature",
+            kicker=f"FEATURE · 6 / {N}",
+            title="Daily Todo & Task Tracker.",
+            subtitle="A clean list to attack the day — and a clean slate every midnight.",
+            bullets=[
+                "Add tasks in one keystroke. Check them off as you go.",
+                "Auto-resets at midnight IST so tomorrow is genuinely a new start.",
+                "Stays in sync across web and the Chrome extension.",
+            ],
+            page_label=f"6 / {N}",
+        ),
+        "A built-in todo list and task tracker for the day. Add fast, check off fast, "
+        "resets cleanly at midnight so tomorrow is a fresh start.",
+    ),
+    (
+        Slide(
+            kind="feature",
+            kicker=f"FEATURE · 7 / {N}",
             title="Journal. Text, Voice, Photos.",
             subtitle="Capture the day in whatever medium it actually deserves.",
             bullets=[
@@ -82,7 +131,7 @@ SCRIPT: list[tuple[Slide, str]] = [
                 "Voice notes for thoughts you can't type fast enough.",
                 "Photos with captions — your year as a private highlight reel.",
             ],
-            page_label=f"4 / {N}",
+            page_label=f"7 / {N}",
         ),
         "Journal your day in text, voice, or photos with captions. "
         "Whatever medium your day deserves — Monk Mode catches it.",
@@ -90,85 +139,128 @@ SCRIPT: list[tuple[Slide, str]] = [
     (
         Slide(
             kind="feature",
-            kicker=f"FEATURE · 5 / {N}",
-            title="The 2-Year Streak Tracker",
+            kicker=f"FEATURE · 8 / {N}",
+            title="The Multi-Year Streak Grid.",
             subtitle="A consistency grid that turns discipline into a visual identity.",
             bullets=[
                 "Every day is a tile, colored by completion percentage.",
-                "Browse history by month, week, or single day.",
+                "Watch your full horizon fill in, day by day.",
                 "Skip a day? Tomorrow is still part of the same streak.",
             ],
-            page_label=f"5 / {N}",
+            page_label=f"8 / {N}",
         ),
-        "The 2-year streak grid turns daily discipline into a visual identity. "
-        "Every tile is a day. Every color is a percentage. Skip a day — the streak survives.",
+        "The streak grid turns daily discipline into a visual identity. Every tile is a day. "
+        "Every color is a percentage. Skip a day — the streak survives.",
     ),
     (
         Slide(
             kind="feature",
-            kicker=f"FEATURE · 6 / {N}",
-            title="Wrapped — Your Year in Discipline",
+            kicker=f"FEATURE · 9 / {N}",
+            title="History + Downloadable PDF Reports.",
+            subtitle="Browse the past. Find the pattern. Act on it.",
+            bullets=[
+                "Open any past day and see exactly what you did and didn't.",
+                "Pick a date range — week, month, quarter, custom.",
+                "Export as a Summary or Detailed PDF report. Read it, share it, learn from it.",
+            ],
+            page_label=f"9 / {N}",
+        ),
+        "Open the History view to browse any past day in detail. Pick a date range. "
+        "Download a Summary or Detailed PDF report to analyze the patterns and act on them.",
+    ),
+    (
+        Slide(
+            kind="feature",
+            kicker=f"FEATURE · 10 / {N}",
+            title="Collectibles. Rewards For Every Step.",
+            subtitle="A reward layer that compounds with consistency.",
+            bullets=[
+                "Unlockable badges for streak milestones — day 7, day 30, day 66, day 100, day 365.",
+                "Quiet, classy rewards. No confetti spam. No dark patterns.",
+                "Shows up in Wrapped at year-end as your trophy case.",
+            ],
+            page_label=f"10 / {N}",
+        ),
+        "Collectibles reward you for every step you take. Unlockable badges at day seven, thirty, "
+        "sixty-six, one hundred, and three hundred sixty-five. Classy rewards. No confetti spam.",
+    ),
+    (
+        Slide(
+            kind="feature",
+            kicker=f"FEATURE · 11 / {N}",
+            title="Wrapped — Your Year In Discipline.",
             subtitle="A Spotify-style recap built around your habits, not your songs.",
             bullets=[
                 "Best month, longest streak, most-honored habit.",
                 "Shareable cards exported as PDF or image.",
-                "Unlock collectibles for streak milestones.",
+                "Your collectibles surface here as a year-end trophy case.",
             ],
-            page_label=f"6 / {N}",
+            page_label=f"11 / {N}",
         ),
-        "At year-end, Wrapped builds a Spotify-style recap of your discipline — "
-        "best month, longest streak, most-honored habit, and shareable cards.",
+        "At year-end, Wrapped builds a Spotify-style recap of your discipline. "
+        "Best month, longest streak, most-honored habit, and shareable cards.",
+    ),
+    (
+        Slide(
+            kind="compare",
+            kicker=f"FEATURE · 12 / {N}",
+            title="Light Mode. Dark Mode. Smooth Switch.",
+            columns=[
+                ("DARK", "The default. Warm-orange accents on near-black canvas. Calm at 5 AM, calm at midnight."),
+                ("LIGHT", "One tap to switch. Paper-warm background, same orange accents, same hierarchy."),
+                ("TRANSITION", "Smooth animated handover — no jarring flash. Theme preference syncs with your account."),
+            ],
+            page_label=f"12 / {N}",
+        ),
+        "Light mode and dark mode, both first-class. Smooth animated switch — no jarring flash. "
+        "Your theme preference travels with your account.",
+    ),
+    (
+        Slide(
+            kind="stat",
+            kicker=f"YOUR DATA · 13 / {N}",
+            stat="AES-256",
+            stat_caption="at rest. TLS in transit. Row-level security per user. Your discipline, encrypted end-to-database.",
+            attribution="Postgres + Supabase Auth + Storage. See README » Data & Security for the full schema.",
+            page_label=f"13 / {N}",
+        ),
+        "Log in with your account and everything syncs to an encrypted database. "
+        "AES two fifty six at rest. T L S in transit. Row level security so only you can read your rows. "
+        "Your discipline, encrypted end to database.",
     ),
     (
         Slide(
             kind="feature",
-            kicker=f"FEATURE · 7 / {N}",
-            title="Chrome Extension Companion",
-            subtitle="The browser is where your willpower goes to die. We turned it around.",
+            kicker=f"FEATURE · 14 / {N}",
+            title="Chrome Extension Companion.",
+            subtitle="The browser is where willpower goes to die. We turned it around.",
             bullets=[
                 "Toolbar popup to toggle today's habits in one click.",
                 "New-tab page shows your streak, today's progress, and a daily quote.",
                 "Smart nudges in morning, midday, and evening.",
             ],
-            page_label=f"7 / {N}",
+            page_label=f"14 / {N}",
         ),
-        "A companion Chrome extension hijacks your new tab page — turning the place "
-        "willpower normally dies into a live dashboard of your streak.",
-    ),
-    (
-        Slide(
-            kind="bullets",
-            kicker=f"UNDER THE HOOD · 8 / {N}",
-            title="Built modern, shipped fast.",
-            subtitle="A serverless React stack you can extend or fork.",
-            bullets=[
-                "Vite + React 18 + TypeScript + Tailwind + shadcn/ui",
-                "Supabase for auth, postgres, and storage",
-                "TanStack Query, react-hook-form + zod, recharts, jsPDF",
-                "Shipped on Lovable. Deploys on every push.",
-            ],
-            page_label=f"8 / {N}",
-        ),
-        "Under the hood: Vite, React eighteen, TypeScript, Tailwind, shadcn UI. "
-        "Supabase for auth, database and storage. Shipped on Lovable, deployed on every push.",
+        "A companion Chrome extension hijacks your new-tab page — turning the place willpower normally "
+        "dies into a live dashboard of your streak.",
     ),
     (
         Slide(
             kind="stat",
-            kicker=f"WHY IT WORKS · 9 / {N}",
+            kicker=f"WHY IT WORKS · 15 / {N}",
             stat="66 days",
-            stat_caption="is the average time to form a habit — not 21. We give you 730.",
+            stat_caption="is the average time to form a habit — not 21. We give you up to 730.",
             attribution="Source: Lally et al., UCL, European Journal of Social Psychology, 2010",
-            page_label=f"9 / {N}",
+            page_label=f"15 / {N}",
         ),
         "Behavioral science says it takes an average of sixty-six days to form a habit — not twenty-one. "
-        "Monk Mode gives you seven hundred and thirty.",
+        "Monk Mode gives you up to seven hundred and thirty.",
     ),
     (
         Slide(
             kind="outro",
             title="Start Day 1.",
-            subtitle="Open the app, pick your non-negotiables, and begin your 2-year streak.",
+            subtitle="Open the app, pick your non-negotiables, and begin your monk-mode streak.",
             page_label=f"{N} / {N}",
         ),
         "Open Productive You dot Lovable dot app, pick your non-negotiables, and start day one.",

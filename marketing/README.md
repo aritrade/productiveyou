@@ -8,7 +8,7 @@ the pipeline has **no Mac-only dependencies**.
 
 | File | Purpose | Length / Size |
 | --- | --- | --- |
-| [`demo.mp4`](./demo.mp4) | ~100-second product demo for the README and landing page | ~104s · 2.6 MB |
+| [`demo.mp4`](./demo.mp4) | Full 16-slide product demo covering every feature (custom non-negotiables, custom habits, flexible duration, todo, journal, streak grid, history + PDF export, collectibles, Wrapped, light/dark, encrypted backend, Chrome extension) | ~190s · 4.6 MB |
 | [`investor-pitch.mp4`](./investor-pitch.mp4) | ~3-minute narrated investor walkthrough | ~182s · 4.5 MB |
 | [`pitch-deck.pdf`](./pitch-deck.pdf) | 15-slide investor deck (problem → solution → TAM → economics → ask) | 15 pages · 1.7 MB |
 | [`thumbnails/`](./thumbnails) | Static PNG cover frames + voiceover manifests | — |

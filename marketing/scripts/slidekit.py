@@ -289,11 +289,20 @@ def _render_stat(img: Image.Image, draw: ImageDraw.ImageDraw, s: Slide) -> None:
     if s.kicker:
         k = mono(26)
         draw.text((x, 240), s.kicker.upper(), font=k, fill=ACCENT)
-    big = font(280, weight="bold")
-    bw, bh = _measure(draw, s.stat, big)
-    draw.text((x, 320), s.stat, font=big, fill=ACCENT)
+    # Auto-shrink the headline if it would run off the canvas — long strings
+    # like "AES-256" need a smaller size than short ones like "$1T".
+    headline = s.stat
+    big_size = 280
+    big = font(big_size, weight="bold")
+    while _measure(draw, headline, big)[0] > W - 280 and big_size > 120:
+        big_size -= 12
+        big = font(big_size, weight="bold")
+    # Use the nominal font size for vertical spacing — textbbox underestimates
+    # the visible height of huge glyphs by ~30%.
+    headline_y = 320
+    draw.text((x, headline_y), headline, font=big, fill=ACCENT)
     cap = font(46, weight="light")
-    y = 320 + bh + 30
+    y = headline_y + int(big.size * 1.05) + 24
     for line in _wrap(draw, s.stat_caption, cap, W - 280):
         draw.text((x, y), line, font=cap, fill=FG)
         y += int(cap.size * 1.2)

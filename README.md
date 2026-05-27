@@ -21,17 +21,39 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 
 ## Demo video
 
-A 90-second narrated walkthrough of the product. Click the thumbnail to watch — or [download the MP4 directly](./marketing/demo.mp4).
+A ~3-minute narrated walkthrough of every feature. Click the thumbnail to watch — or [download the MP4 directly](./marketing/demo.mp4).
 
 <p align="center">
   <a href="./marketing/demo.mp4">
-    <img src="./marketing/thumbnails/demo.png" alt="Watch the Monk Mode Activated demo (90 seconds, MP4)" width="720" />
+    <img src="./marketing/thumbnails/demo.png" alt="Watch the Monk Mode Activated demo (~3 minutes, MP4)" width="720" />
   </a>
 </p>
 
 <p align="center">
-  <a href="./marketing/demo.mp4"><b>▶ marketing/demo.mp4</b></a> · ~104s · 1920×1080 · H.264 + AAC · 2.6 MB
+  <a href="./marketing/demo.mp4"><b>▶ marketing/demo.mp4</b></a> · ~190s · 1920×1080 · H.264 + AAC · 4.6 MB
 </p>
+
+<details>
+<summary>What the demo covers (16 slides)</summary>
+
+1. Title — Monk Mode Activated
+2. Why this exists — the 21-day myth, why habit apps fail at day 14
+3. **Pick Your Non-Negotiables** — fully customizable hard floor per user
+4. **Build Your Habit Stack** — fully customizable daily habits per user
+5. **Choose Your Horizon** — 1 month / 3 / 6 / 12 / 24 months
+6. **Daily Todo & Task Tracker** — auto-resets at midnight IST
+7. **Multi-modal Journal** — text, voice, captioned photos
+8. **Multi-Year Streak Grid** — visual identity over your full horizon
+9. **History + Downloadable PDF Reports** — Summary or Detailed reports by date range
+10. **Collectibles** — unlockable badges for milestones (day 7 / 30 / 66 / 100 / 365)
+11. **Wrapped** — Spotify-style year-end recap
+12. **Light + Dark theme** — smooth animated switch, preference syncs with account
+13. **AES-256 encrypted backend** — TLS in transit, row-level security per user
+14. **Chrome extension companion** — toolbar popup + new-tab dashboard + smart nudges
+15. **66 days behavioral-science backing** — Lally et al., UCL, 2010
+16. Outro — start day 1
+
+</details>
 
 <details>
 <summary>Inline player (works on GitHub)</summary>
