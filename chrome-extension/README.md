@@ -33,7 +33,7 @@ plus a motivational new-tab dashboard.
 ### Option B — From this repo
 
 ```bash
-git clone https://github.com/productdecoded/productiveyou.git
+git clone https://github.com/aritrade/productiveyou.git
 # In Chrome:
 #   chrome://extensions  »  Developer mode ON  »  Load unpacked
 #   » select the productiveyou/chrome-extension/ folder

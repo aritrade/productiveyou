@@ -1,7 +1,12 @@
 """Generates the product demo video for Monk Mode Activated.
 
-Renders slide images, synthesizes a voiceover per slide with macOS `say`,
-and uses ffmpeg to concat them into an MP4 with crossfade transitions.
+Cross-platform: runs on macOS, Linux and Windows. Voiceover is delegated
+to ``tts.py``, which tries edge-tts → pyttsx3 → macOS ``say`` in order
+(first one available wins). Image rendering uses Pillow with bundled
+OFL-licensed fonts from ``marketing/scripts/fonts/``, so there's no
+dependency on system font directories. ffmpeg is the only non-Python
+prerequisite — install via Homebrew (macOS), apt/dnf (Linux), or
+Chocolatey/winget (Windows).
 
 Outputs:
   marketing/demo.mp4

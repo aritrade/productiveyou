@@ -42,19 +42,22 @@ That's it. Each build script is idempotent — re-run as many times as you want.
 
 ## Voiceover backends
 
-`scripts/tts.py` picks the first available backend in this order:
+`scripts/tts.py` picks the first available backend in this order. **The first two work identically on macOS, Linux, and Windows** — the macOS `say` entry is purely an escape hatch for Mac users who haven't installed any Python TTS deps. You should never need it.
 
-| Priority | Backend | Setup | Quality | Network? |
-| --- | --- | --- | --- | --- |
-| 1 | [`edge-tts`](https://github.com/rany2/edge-tts) | `pip install edge-tts` | Neural (best) | Yes |
-| 2 | [`pyttsx3`](https://pypi.org/project/pyttsx3/) | `pip install pyttsx3` | Native OS (decent) | No |
-| 3 | macOS `say` | built-in (Darwin only) | Native (decent) | No |
+| Priority | Backend | Platforms | Setup | Quality | Network? |
+| --- | --- | --- | --- | --- | --- |
+| 1 (recommended) | [`edge-tts`](https://github.com/rany2/edge-tts) | macOS / Linux / Windows | `pip install edge-tts` | Neural (best) | Yes |
+| 2 | [`pyttsx3`](https://pypi.org/project/pyttsx3/) | macOS / Linux / Windows (uses native SAPI5 / NSSpeech / espeak-ng) | `pip install pyttsx3` | Native OS (decent) | No |
+| 3 (last resort, Mac-only) | macOS `say` | macOS only | built-in | Native (decent) | No |
+
+`pip install -r marketing/scripts/requirements.txt` covers both options 1 and 2, so any OS lands at "neural-quality voice, offline-capable" with one command.
 
 Force a specific backend at any time:
 
 ```sh
-PRODUCTIVEYOU_TTS_BACKEND=pyttsx3 python3 marketing/scripts/build_demo.py
-PRODUCTIVEYOU_TTS_BACKEND=mac_say python3 marketing/scripts/build_demo.py
+PRODUCTIVEYOU_TTS_BACKEND=edge   python3 marketing/scripts/build_demo.py   # any OS
+PRODUCTIVEYOU_TTS_BACKEND=pyttsx3 python3 marketing/scripts/build_demo.py   # any OS
+PRODUCTIVEYOU_TTS_BACKEND=mac_say python3 marketing/scripts/build_demo.py   # macOS only
 ```
 
 To swap in a **paid commercial voice** (ElevenLabs, OpenAI TTS, Google Cloud), edit `synthesize()` in [`scripts/tts.py`](./scripts/tts.py) — the build scripts call it with a stable `(text, out_path, voice, rate)` signature.

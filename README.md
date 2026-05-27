@@ -154,7 +154,7 @@ A ~3-minute narrated walkthrough of every feature. Click the thumbnail to watch 
 <details>
 <summary>Inline player (works on GitHub)</summary>
 
-https://github.com/productdecoded/productiveyou/raw/main/marketing/demo.mp4
+https://github.com/aritrade/productiveyou/raw/main/marketing/demo.mp4
 
 </details>
 
@@ -252,7 +252,7 @@ A narrated walkthrough designed for VCs, angels, and partner intros. Same conten
 <details>
 <summary>Inline player (works on GitHub)</summary>
 
-https://github.com/productdecoded/productiveyou/raw/main/marketing/investor-pitch.mp4
+https://github.com/aritrade/productiveyou/raw/main/marketing/investor-pitch.mp4
 
 </details>
 
@@ -416,10 +416,12 @@ Be honest with users: Supabase (and AWS underneath) can technically read the row
 
 ## Local development
 
-You need Node.js 18+ and either `bun` or `npm`. Install with [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) if you don't have Node.
+> **Platform support:** the app, the build pipeline, the APK build, and the marketing-asset build scripts all run on **macOS, Linux, and Windows**. The only Mac-specific thing in the entire repo is an *optional last-resort* fallback voice (`say`) inside the TTS chain — and even that's preceded by two cross-platform options (`edge-tts`, then `pyttsx3`). No part of the project requires a Mac.
+
+You need Node.js 18+ and either `bun` or `npm`. Install with [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows) if you don't have Node.
 
 ```sh
-git clone https://github.com/productdecoded/productiveyou.git
+git clone https://github.com/aritrade/productiveyou.git
 cd productiveyou
 npm install            # or: bun install
 cp .env.example .env   # then fill in the Supabase values below
@@ -447,6 +449,46 @@ VITE_SUPABASE_PUBLISHABLE_KEY="<your-supabase-anon-key>"
 | `npm run lint` | Run ESLint |
 | `npm test` | Run Vitest once |
 | `npm run test:watch` | Run Vitest in watch mode |
+
+---
+
+## Build everything from source (any OS)
+
+Every artefact in this repo is reproducible from a fresh clone on any operating system. Pick the build you need:
+
+### A. The web app (Vite + React)
+
+| OS | Prereqs (one-time) | Build command |
+| --- | --- | --- |
+| **macOS** | `brew install node` *or* nvm; then `npm install` | `npm run build` → `dist/` |
+| **Linux** | `apt install nodejs npm` / `dnf install nodejs` *or* nvm; then `npm install` | `npm run build` → `dist/` |
+| **Windows** | `winget install OpenJS.NodeJS` *or* nvm-windows; then `npm install` | `npm run build` → `dist/` |
+
+Same source, same output everywhere. The dev server (`npm run dev`) listens on `::` so it's reachable on IPv4 + IPv6 on every platform.
+
+### B. The Android APK (Trusted Web Activity)
+
+| OS | Prereqs (one-time) | Build command |
+| --- | --- | --- |
+| **macOS** | JDK 17 ([Temurin](https://adoptium.net/temurin/releases/?version=17)), Android cmdline-tools, `npm i -g @bubblewrap/cli`, Python 3 (preinstalled) | `./marketing/scripts/build-apk.sh` |
+| **Linux** | Same as macOS — Temurin offers a Linux x64/arm64 tarball, cmdline-tools has a Linux build | `./marketing/scripts/build-apk.sh` |
+| **Windows** | Same prereqs (Temurin Windows zip, cmdline-tools Windows zip) — run the script under **WSL** or **Git Bash** | `bash marketing/scripts/build-apk.sh` |
+
+The script is fully non-interactive (driven by env vars). First run downloads ~700 MB of Gradle + AndroidX dependencies and takes ~10 min; subsequent runs ~30 s. See the file header for the full env-var spec.
+
+### C. Marketing assets (demo + investor videos, pitch deck)
+
+| OS | Prereqs (one-time) | Build command |
+| --- | --- | --- |
+| **macOS** | `brew install python ffmpeg`, then `pip install -r marketing/scripts/requirements.txt` | `python marketing/scripts/build_demo.py && python marketing/scripts/build_pitch_video.py && python marketing/scripts/build_deck.py` |
+| **Linux** | `apt install python3 ffmpeg` / `dnf install python3 ffmpeg`, then `pip install -r marketing/scripts/requirements.txt` | same |
+| **Windows** | `winget install Python.Python.3.12 Gyan.FFmpeg`, then `pip install -r marketing/scripts/requirements.txt` | same |
+
+Fonts (Inter + JetBrains Mono, both OFL 1.1) are bundled in `marketing/scripts/fonts/` so there's no dependency on system fonts. Voiceover uses [edge-tts](https://github.com/rany2/edge-tts) (free, no API key, neural quality, runs identically on every OS).
+
+### D. The Chrome extension
+
+No build step needed — it's vanilla HTML/JS/CSS. Either load `chrome-extension/` as an unpacked extension (works in Chrome/Edge/Brave/Arc on macOS, Windows, Linux, ChromeOS) or distribute the pre-packaged [`marketing/downloads/monk-mode-chrome-extension.zip`](./marketing/downloads/monk-mode-chrome-extension.zip).
 
 ---
 

@@ -6,17 +6,28 @@
 # Trusted Web Activity package using Bubblewrap + Gradle. Output lands in
 # marketing/downloads/monk-mode-activated.apk.
 #
-# Prereqs (one-time on the build machine):
+# Cross-platform: tested on macOS (arm64 + x86_64) and Linux. Windows
+# requires WSL or Git Bash. Nothing OS-specific in the script itself —
+# everything is driven via env vars + a vendored Node helper.
+#
+# Prereqs (one-time on the build machine, any OS):
 #   - Node.js 18+
-#   - Java JDK 17 (Temurin recommended)
+#   - Java JDK 17 (Temurin recommended — works on macOS, Linux, Windows)
 #   - Android cmdline-tools  (run `sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"`)
 #   - @bubblewrap/cli installed globally: `npm i -g @bubblewrap/cli`
+#   - python3 (for the localhost manifest server; pre-installed on macOS + Linux)
 #
 # Required env (defaults in parens):
-#   JAVA_HOME                          (must point at the JDK *root*, e.g.
-#                                       ~/.local/jdk/jdk-17.0.19+10 on macOS —
-#                                       Bubblewrap appends Contents/Home itself)
-#   ANDROID_HOME                       (Android SDK root)
+#   JAVA_HOME                          (must point at the JDK *root*. Per OS:
+#                                         macOS:   ~/.local/jdk/jdk-17.x.y/
+#                                                  (NOT the .../Contents/Home/ child —
+#                                                  Bubblewrap appends Contents/Home itself
+#                                                  when it detects darwin)
+#                                         Linux:   ~/.local/jdk/jdk-17.x.y/
+#                                         Windows: C:\jdk-17.x.y\
+#                                       Bubblewrap reads this from ~/.bubblewrap/config.json
+#                                       which this script writes for you below.)
+#   ANDROID_HOME                       (Android SDK root, any OS)
 #   BUBBLEWRAP_KEYSTORE_PASSWORD       (no default; required)
 #   BUBBLEWRAP_KEY_PASSWORD            (no default; required)
 #   KEYSTORE_PATH                      (default: ./.apk-build/twa/android.keystore;
