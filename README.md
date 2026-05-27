@@ -19,6 +19,85 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 
 ---
 
+## Get the app — install on any device
+
+The app is a Progressive Web App, which means you can install it on **iPhone, Android, Mac, Windows, Linux, or ChromeOS** with no app store, no developer account, and no APK download — just open the site and tap install. We also ship a Chrome extension and a fully-scripted path to build a sideloadable Android `.apk`.
+
+| Device | Path | Time | Cost |
+| --- | --- | --- | --- |
+| **iPhone / iPad** | Safari » Share » **Add to Home Screen** | 10 s | Free |
+| **Android phone / tablet** | Chrome » menu » **Install app** | 10 s | Free |
+| **Android `.apk` sideload** | Build once with [`marketing/scripts/build-apk.sh`](./marketing/scripts/build-apk.sh) or use [PWA Builder](https://www.pwabuilder.com/) | ~10 min one-time | Free |
+| **macOS / Windows / Linux** | Chrome / Edge / Brave URL bar » install icon | 5 s | Free |
+| **Any desktop browser** | Just visit [productiveyou.lovable.app](https://productiveyou.lovable.app) | 0 s | Free |
+| **Chrome extension** | [Load unpacked](./chrome-extension) or grab [`monk-mode-chrome-extension.zip`](./marketing/downloads/monk-mode-chrome-extension.zip) | 30 s | Free |
+
+### iPhone & iPad (free, no Apple Developer Program)
+
+1. Open **Safari** (must be Safari — Chrome on iOS can't install PWAs) and go to **https://productiveyou.lovable.app**.
+2. Sign in so your data syncs.
+3. Tap the **Share** icon (square with up-arrow) at the bottom.
+4. Scroll and tap **Add to Home Screen** » **Add**.
+5. The ⚡ Monk Mode icon appears on your home screen. Launching it runs the app **full-screen, standalone, with the iOS status bar styled to match** — indistinguishable from a native app for daily use.
+
+What you get on iOS: full-screen launch, custom icon, splash screen, offline app-shell, persistent local state. What you don't get on iOS (Apple platform limits, not ours): native push notifications when the app is closed, background sync, App Store discovery. A real `.ipa` distributed outside TestFlight needs the [$99/yr Apple Developer Program](https://developer.apple.com/programs/) — see the [iOS native app section](#ios-native-app-honest-options) below if you want to go that route.
+
+### Android phone & tablet (free, no Play Store)
+
+**Option A — install the PWA from Chrome (recommended, 10 s)**
+
+1. Open **Chrome** on Android and go to **https://productiveyou.lovable.app**.
+2. Tap the **⋮ menu** » **Install app** (or "Add to home screen" on older Chrome versions).
+3. Confirm. The ⚡ Monk Mode icon shows up in your app drawer, full-screen, with splash + offline app-shell support.
+
+**Option B — sideload the `.apk`**
+
+If you'd rather distribute a real Android package (e.g. share with friends without sending them a URL):
+
+```bash
+# On any Mac/Linux/Windows dev machine with Node 18+ and JDK 17
+./marketing/scripts/build-apk.sh
+# » produces marketing/downloads/monk-mode-activated-debug.apk
+```
+
+The script uses Google's official [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) CLI to wrap the live PWA in a Trusted Web Activity APK. First run downloads the JDK + Android SDK automatically (~10 min, ~1 GB), subsequent runs take ~30 s. The resulting APK is signed with a debug certificate; for a release-signed APK pass `--release` and follow the keystore prompts.
+
+**Option C — zero-install web tool** (no local SDK needed): drop the URL `https://productiveyou.lovable.app` into [pwabuilder.com](https://www.pwabuilder.com/), click **Package for stores** » **Android**, choose **Other / Sideload (signed)**, download. Same TWA approach, generated in their cloud.
+
+To install the APK on a device:
+
+1. On the phone, enable **Settings » Apps » Special access » Install unknown apps** for the app you'll use to open the `.apk` (Chrome, Files, Drive, etc).
+2. Open the `.apk` on the device, tap **Install**.
+3. First launch shows the Chrome version banner once (TWA requirement) and never again.
+
+### macOS, Windows, Linux, ChromeOS desktop
+
+1. Open https://productiveyou.lovable.app in Chrome, Edge, Brave, or Arc.
+2. The address bar shows an **install icon** (⊕ on Chrome, similar on others). Click it.
+3. Confirm. The app gets a real Dock / Start Menu / launcher entry, opens in its own window, and works offline.
+
+### Chrome extension
+
+A separate Manifest V3 extension that lives in your toolbar + replaces the new-tab page with a discipline dashboard. Full guide and three install paths (one-zip, from-repo, package-it-yourself) live in [**`chrome-extension/README.md`**](./chrome-extension/README.md). Or grab the prebuilt zip directly:
+
+**» [Download `monk-mode-chrome-extension.zip`](./marketing/downloads/monk-mode-chrome-extension.zip) (18 KB)** — unzip » `chrome://extensions` » Developer mode ON » Load unpacked.
+
+### iOS native app — honest options
+
+There is **no free way to ship a real `.ipa`** on the App Store or to sideload one without paying Apple. The cheapest paths:
+
+| Path | What you get | Cost | Notes |
+| --- | --- | --- | --- |
+| **PWA Add to Home Screen** _(recommended)_ | Indistinguishable from a native app for 95% of users | $0 | What this README covers above |
+| **TestFlight** | Up to 10 k beta testers via Apple's portal | $99 / yr (Apple Developer Program) | Requires signing a real `.ipa` |
+| **App Store** | Public distribution + push + IAP | $99 / yr (same membership) | App review + monetisation rules apply |
+| **AltStore / SideStore** | Free sideload to your own device | Free for user, you must rebuild the `.ipa` every 7 days unless ADP | Requires the user to set up AltServer / WireGuard tunnel |
+| **Xcode 7-day free sideload** | Sideload to your personal device | Free | Needs a Mac + Xcode + Apple ID; signing expires every 7 days |
+
+If/when ProductiveYou wants a real iOS native shell, the cleanest path is to wrap the existing PWA with [Capacitor](https://capacitorjs.com/docs/ios) — that's a one-command `npx cap add ios` from the existing build, after which the project opens in Xcode and ships exactly like any other iOS app. The reason this isn't shipped today: an `.ipa` is only useful to users with an Apple Developer Program seat to host it, and the free PWA path covers the same use case for everyone else.
+
+---
+
 ## Demo video
 
 A ~3-minute narrated walkthrough of every feature. Click the thumbnail to watch — or [download the MP4 directly](./marketing/demo.mp4).
@@ -282,14 +361,24 @@ Be honest with users: Supabase (and AWS underneath) can technically read the row
 ```
 .
 ├── chrome-extension/    # Companion MV3 extension (popup + new-tab dashboard)
+│   ├── manifest.json    # MV3 manifest, icons + permissions + popup + newtab + worker
+│   ├── popup.html / .js
+│   ├── newtab.html
+│   ├── background.js    # Alarms + notifications + midnight reset
+│   └── icons/           # icon16/32/48/128 PNGs + 1024px master
 ├── marketing/           # Demo + investor videos, pitch-deck PDF, build scripts
 │   ├── demo.mp4
 │   ├── investor-pitch.mp4
 │   ├── pitch-deck.pdf
 │   ├── README.md        # How to regenerate everything
-│   ├── scripts/         # slidekit + build_demo + build_pitch_video + build_deck
+│   ├── downloads/       # Prebuilt extension .zip (+ APK after build)
+│   ├── scripts/         # slidekit + build_demo + build_pitch_video + build_deck + build-apk
 │   └── thumbnails/      # Cover frames + voiceover manifests
-├── public/              # Static assets
+├── public/              # Static assets served as-is at site root
+│   ├── manifest.webmanifest  # PWA manifest (iOS + Android + desktop install)
+│   ├── sw.js                 # Service worker (offline app-shell, no Supabase caching)
+│   ├── icons/                # PWA icons 72/96/128/144/152/192/384/512 + maskable + apple-touch
+│   └── favicon.ico
 ├── src/
 │   ├── components/      # Habits, journal, streak, collectibles, UI primitives
 │   ├── hooks/           # useAuth, useMidnightReset, etc.
@@ -298,7 +387,7 @@ Be honest with users: Supabase (and AWS underneath) can technically read the row
 │   ├── pages/           # Auth, Onboarding, Index, History, Wrapped, NotFound
 │   └── main.tsx
 ├── supabase/            # config.toml + SQL migrations
-├── index.html
+├── index.html           # PWA meta tags + service-worker registration live here
 └── package.json
 ```
 
@@ -360,18 +449,13 @@ Use the pencil icon on any file, commit on the same branch.
 
 ---
 
-## Chrome extension
+## Companion surfaces
 
-A Manifest V3 companion extension lives in [`chrome-extension/`](./chrome-extension). It mirrors today's habits & non-negotiables into a popup, overrides the new-tab page with your streak/quote, and surfaces smart reminders.
-
-```sh
-# 1. Open chrome://extensions
-# 2. Toggle "Developer mode" on
-# 3. Click "Load unpacked"
-# 4. Select the chrome-extension/ folder
-```
-
-See [`chrome-extension/README.md`](./chrome-extension/README.md) for full details (including required icons).
+| Surface | Where | Install |
+| --- | --- | --- |
+| **Chrome / Edge / Brave / Arc extension** | [`chrome-extension/`](./chrome-extension) | See [Chrome extension install guide](./chrome-extension/README.md) or the **[Get the app](#get-the-app--install-on-any-device)** section above |
+| **PWA (iOS, Android, Mac, Windows, Linux, ChromeOS)** | Live site | See **[Get the app](#get-the-app--install-on-any-device)** section above |
+| **Sideload Android APK** | Built via [`marketing/scripts/build-apk.sh`](./marketing/scripts/build-apk.sh) | See **[Get the app](#get-the-app--install-on-any-device)** » Android » Option B |
 
 ---
 

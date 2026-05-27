@@ -2,28 +2,56 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Monk Mode Activated — Productivity Tracker</title>
-    <meta name="description" content="Track your daily habits, non-negotiables, journal, and build a 2-year consistency streak.">
-    <meta name="author" content="Lovable" />
+    <meta name="description" content="Track your daily habits, non-negotiables, journal, and build a multi-year consistency streak.">
+    <meta name="author" content="ProductiveYou" />
 
-    
-    
+    <!-- PWA: identity + theme -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#fcad29" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0e" media="(prefers-color-scheme: dark)" />
+    <meta name="application-name" content="Monk Mode Activated" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- PWA: icons + favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+
+    <!-- iOS: home-screen install + status-bar + splash hint -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Monk Mode" />
+
+    <!-- Social previews -->
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a21fcc10-3f98-4280-840a-6903d9629a14/id-preview-88697ad5--a1f314eb-5228-49f6-837c-d8b4810ada5c.lovable.app-1772949249805.png">
-
+    <meta property="og:title" content="Monk Mode Activated — Productivity Tracker" />
+    <meta property="og:description" content="Track your daily habits, non-negotiables, journal, and build a multi-year consistency streak." />
+    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a21fcc10-3f98-4280-840a-6903d9629a14/id-preview-88697ad5--a1f314eb-5228-49f6-837c-d8b4810ada5c.lovable.app-1772949249805.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a21fcc10-3f98-4280-840a-6903d9629a14/id-preview-88697ad5--a1f314eb-5228-49f6-837c-d8b4810ada5c.lovable.app-1772949249805.png">
-    <meta property="og:title" content="Monk Mode Activated — Productivity Tracker">
-  <meta name="twitter:title" content="Monk Mode Activated — Productivity Tracker">
-  <meta property="og:description" content="Track your daily habits, non-negotiables, journal, and build a 2-year consistency streak.">
-  <meta name="twitter:description" content="Track your daily habits, non-negotiables, journal, and build a 2-year consistency streak.">
-</head>
+    <meta name="twitter:title" content="Monk Mode Activated — Productivity Tracker" />
+    <meta name="twitter:description" content="Track your daily habits, non-negotiables, journal, and build a multi-year consistency streak." />
+    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a21fcc10-3f98-4280-840a-6903d9629a14/id-preview-88697ad5--a1f314eb-5228-49f6-837c-d8b4810ada5c.lovable.app-1772949249805.png" />
+  </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Register the service worker so the app is installable on iOS/Android/desktop
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js", { scope: "/" })
+            .catch((err) => console.warn("[pwa] sw registration failed:", err));
+        });
+      }
+    </script>
   </body>
 </html>

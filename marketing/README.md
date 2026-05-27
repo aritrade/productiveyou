@@ -11,6 +11,8 @@ the pipeline has **no Mac-only dependencies**.
 | [`demo.mp4`](./demo.mp4) | Full 16-slide product demo covering every feature (custom non-negotiables, custom habits, flexible duration, todo, journal, streak grid, history + PDF export, collectibles, Wrapped, light/dark, encrypted backend, Chrome extension) | ~190s · 4.6 MB |
 | [`investor-pitch.mp4`](./investor-pitch.mp4) | ~3-minute narrated investor walkthrough | ~182s · 4.5 MB |
 | [`pitch-deck.pdf`](./pitch-deck.pdf) | 15-slide investor deck (problem → solution → TAM → economics → ask) | 15 pages · 1.7 MB |
+| [`downloads/monk-mode-chrome-extension.zip`](./downloads/monk-mode-chrome-extension.zip) | One-zip download of the Chrome extension — drop into `chrome://extensions/` as **Load unpacked** | 18 KB |
+| [`scripts/build-apk.sh`](./scripts/build-apk.sh) | Builds a sideloadable Android `.apk` from the live PWA via Bubblewrap CLI. First run pulls JDK + Android SDK (~10 min), subsequent runs ~30 s | shell script |
 | [`thumbnails/`](./thumbnails) | Static PNG cover frames + voiceover manifests | — |
 | [`scripts/`](./scripts) | Cross-platform Python build scripts + bundled fonts | — |
 
