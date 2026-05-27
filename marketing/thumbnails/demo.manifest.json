@@ -1,0 +1,68 @@
+{
+  "voice": "Samantha",
+  "rate_wpm": 175,
+  "slides": [
+    {
+      "index": 1,
+      "kicker": "DEMO \u00b7 1 / 10",
+      "title": "Monk Mode Activated.",
+      "voiceover": "Meet Monk Mode Activated \u2014 a daily discipline tracker built for the long game."
+    },
+    {
+      "index": 2,
+      "kicker": "WHY THIS EXISTS \u00b7 2 / 10",
+      "title": "Most habit apps fail you by day 14.",
+      "voiceover": "Most habit apps fail you around day fourteen. Streak resets, guilt, quit, repeat. Monk Mode treats discipline as a two-year project, not a twenty-one day stunt."
+    },
+    {
+      "index": 3,
+      "kicker": "FEATURE \u00b7 3 / 10",
+      "title": "Non-Negotiables & Daily Habits",
+      "voiceover": "At the core are non-negotiables \u2014 the things you simply refuse to do \u2014 and daily habits, the things you commit to. Tap a box and your completion percentage updates instantly."
+    },
+    {
+      "index": 4,
+      "kicker": "FEATURE \u00b7 4 / 10",
+      "title": "Journal. Text, Voice, Photos.",
+      "voiceover": "Journal your day in text, voice, or photos with captions. Whatever medium your day deserves \u2014 Monk Mode catches it."
+    },
+    {
+      "index": 5,
+      "kicker": "FEATURE \u00b7 5 / 10",
+      "title": "The 2-Year Streak Tracker",
+      "voiceover": "The 2-year streak grid turns daily discipline into a visual identity. Every tile is a day. Every color is a percentage. Skip a day \u2014 the streak survives."
+    },
+    {
+      "index": 6,
+      "kicker": "FEATURE \u00b7 6 / 10",
+      "title": "Wrapped \u2014 Your Year in Discipline",
+      "voiceover": "At year-end, Wrapped builds a Spotify-style recap of your discipline \u2014 best month, longest streak, most-honored habit, and shareable cards."
+    },
+    {
+      "index": 7,
+      "kicker": "FEATURE \u00b7 7 / 10",
+      "title": "Chrome Extension Companion",
+      "voiceover": "A companion Chrome extension hijacks your new tab page \u2014 turning the place willpower normally dies into a live dashboard of your streak."
+    },
+    {
+      "index": 8,
+      "kicker": "UNDER THE HOOD \u00b7 8 / 10",
+      "title": "Built modern, shipped fast.",
+      "voiceover": "Under the hood: Vite, React eighteen, TypeScript, Tailwind, shadcn UI. Supabase for auth, database and storage. Shipped on Lovable, deployed on every push."
+    },
+    {
+      "index": 9,
+      "kicker": "WHY IT WORKS \u00b7 9 / 10",
+      "title": "",
+      "voiceover": "Behavioral science says it takes an average of sixty-six days to form a habit \u2014 not twenty-one. Monk Mode gives you seven hundred and thirty."
+    },
+    {
+      "index": 10,
+      "kicker": "",
+      "title": "Start Day 1.",
+      "voiceover": "Open Productive You dot Lovable dot app, pick your non-negotiables, and start day one."
+    }
+  ],
+  "total_duration_s": 87.75,
+  "output": "/Users/aritra.de/Desktop/Cursor Work/productiveyou/marketing/demo.mp4"
+}

@@ -15,31 +15,158 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 | **Lovable editor** | https://lovable.dev/projects/a21fcc10-3f98-4280-840a-6903d9629a14 |
 | **GitHub repo** | https://github.com/productdecoded/productiveyou |
 
-> Open the production link above to start using the tracker, or open the Lovable editor to keep building with AI prompts.
+> Open the production link above to start using the tracker.
 
 ---
 
-## Features
+## Demo video
 
-- **Daily Habits & Non-Negotiables** — Customize the rules you live by and the habits you’re building.
-- **Journal** — Quick text, voice notes, and photo entries with captions.
-- **Todo list** — Lightweight daily tasks that reset at midnight (IST).
-- **Streak tracker** — Visualize a 2-year consistency journey day-by-day.
-- **History view** — Browse every past day’s completion percentage.
-- **Wrapped** — A Spotify-Wrapped-style year-end recap of your discipline.
-- **Auth + cloud sync** — Email / OAuth via Supabase, data persisted per-user.
-- **Dark / light theme** with smooth transitions.
-- **Companion Chrome extension** — Toggle habits from the toolbar, see your streak on every new tab, and get smart morning / midday / evening nudges.
+A 90-second narrated walkthrough of the product. Click the thumbnail to watch — or [download the MP4 directly](./marketing/demo.mp4).
 
-## Tech stack
+<p align="center">
+  <a href="./marketing/demo.mp4">
+    <img src="./marketing/thumbnails/demo.png" alt="Watch the Monk Mode Activated demo (90 seconds, MP4)" width="720" />
+  </a>
+</p>
 
-- **Frontend:** Vite, React 18, TypeScript, React Router, TanStack Query
+<p align="center">
+  <a href="./marketing/demo.mp4"><b>▶ marketing/demo.mp4</b></a> · 90s · 1920×1080 · H.264 + AAC · 2.3 MB
+</p>
+
+<details>
+<summary>Inline player (works on GitHub)</summary>
+
+https://github.com/productdecoded/productiveyou/raw/main/marketing/demo.mp4
+
+</details>
+
+---
+
+## Why this app exists
+
+Most habit apps treat discipline like a 21-day stunt. They optimise for streak vanity, punish missed days, and lose 90%+ of users within a month. The behavioural-science literature has been clear for over a decade that habit formation takes a **median of 66 days, with a range of 18–254** (Lally et al., UCL, *European Journal of Social Psychology*, 2010 — see [the original paper](https://doi.org/10.1002/ejsp.674) and a recent [interview with Dr Lally](https://www.surrey.ac.uk/news/does-it-really-take-66-days-form-habit-we-asked-expert-dr-pippa-lally)).
+
+**Monk Mode Activated** is built on three premises the research actually supports:
+
+1. **Treat habits as a 2-year arc, not a 21-day stunt.** A long horizon removes the "I've already broken it, give up" trap.
+2. **Forgive missed days.** Lally's data shows one missed performance doesn't materially affect habit formation. So our streak survives.
+3. **Pair *what you do* with *what you refuse to do*.** Non-negotiables sit above habits — the hard floor that elite performers actually operate from.
+
+### Value proposition
+
+> A 2-year monk-mode operating system that turns daily discipline into a visual identity — without the streak shame that kills every other habit app.
+
+### What it's solving
+
+| Pain | Why it persists | How we solve it |
+| --- | --- | --- |
+| Habit apps reset progress after one missed day | Built for streak gamification, not behaviour change | Forgiving streak — missed day is logged, never punished |
+| Productivity tools demand a setup tax | Designed for power users, not normal humans | Opinionated defaults: 4 non-negotiables, 12 habits, ready in 30 seconds |
+| Journaling apps are separate from habit apps | Different funnels in the App Store | One product: habits + journal + todo + Wrapped, synced |
+| Willpower dies in the browser | New tab = doomscroll launchpad | Chrome extension converts every new tab into a discipline checkpoint |
+| No reflection layer to compound learning | Annual reflection lives in Notion templates | Wrapped — Spotify-style year-end recap of your discipline |
+
+---
+
+## Features (with the tech behind each)
+
+| # | Feature | What it does | Built with |
+| --- | --- | --- | --- |
+| 1 | **Non-Negotiables** | Custom rules you refuse to break (no smoking, no doomscroll, no skipping workouts). Visible at the top of the day. | React + TypeScript, custom Radix-based [`NonNegotiables`](./src/components/NonNegotiables.tsx) component, persisted to Supabase via [`dailyEntries.ts`](./src/lib/dailyEntries.ts) |
+| 2 | **Daily Habits** | Tap-to-check list of habits you're building. Live completion percentage updates on every interaction. | React state + memoization, [`DailyHabits`](./src/components/DailyHabits.tsx) |
+| 3 | **Journal — text, voice, photos** | Multi-modal daily journaling with quick text, voice recordings, and captioned photos. | Web Audio API, Supabase Storage for photos and audio, [`JournalSection`](./src/components/JournalSection.tsx) |
+| 4 | **Daily Todo** | Lightweight todos that reset at IST midnight via a custom hook. | Custom [`useMidnightReset`](./src/hooks/useMidnightReset.ts), [`TodoList`](./src/components/TodoList.tsx) |
+| 5 | **Streak Tracker** | 2-year consistency grid coloured by completion percentage per day. Skipping a day doesn't reset it. | recharts, custom heatmap in [`StreakTracker`](./src/components/StreakTracker.tsx) |
+| 6 | **History** | Browse every past day with the same checklist + journal view. | React Router 6, server-state via TanStack Query |
+| 7 | **Wrapped** | Year-end recap: best month, longest streak, most-honored habit. Exportable as PDF/image cards. | jsPDF + jspdf-autotable + html2canvas, [`pages/Wrapped.tsx`](./src/pages/Wrapped.tsx) |
+| 8 | **Collectibles** | Unlockable badges for streak milestones (7, 30, 66, 100, 365 days). | Local logic + Supabase persistence, [`Collectibles`](./src/components/Collectibles.tsx) |
+| 9 | **Daily Quote** | Rotating motivational quote pulled from a curated list. | [`DailyQuote`](./src/components/DailyQuote.tsx) |
+| 10 | **Theme (dark / light)** | Animated transition between themes — defaults to dark. | `next-themes`, custom CSS transition for non-jarring switches |
+| 11 | **Auth & cloud sync** | Email / OAuth via Supabase. Per-user persistence across devices. | `@supabase/supabase-js`, `@lovable.dev/cloud-auth-js`, [`useAuth`](./src/hooks/useAuth.tsx) |
+| 12 | **Onboarding** | Profile setup, custom non-negotiables, streak start date, consistency duration (default 24 months). | react-hook-form + zod, [`pages/Onboarding.tsx`](./src/pages/Onboarding.tsx) |
+| 13 | **Chrome extension companion** | Toolbar popup + new-tab dashboard + smart morning / midday / evening nudges. Manifest V3, no permissions beyond `storage`, `alarms`, `notifications`. | Vanilla JS + `chrome.storage.local`, see [`chrome-extension/`](./chrome-extension) |
+
+### Tech stack (high level)
+
+- **Frontend:** Vite, React 18, TypeScript, React Router 6, TanStack Query
 - **UI:** Tailwind CSS, shadcn/ui (Radix Primitives), lucide-react, recharts
 - **Forms & validation:** react-hook-form + zod
 - **Backend:** Supabase (Auth, Postgres, Storage)
-- **PDF / export:** jsPDF, html2canvas
-- **Tooling:** ESLint, Vitest, Testing Library
-- **Built with:** [Lovable](https://lovable.dev)
+- **PDF / export:** jsPDF, jspdf-autotable, html2canvas
+- **Notifications & schedules (extension):** Chrome `alarms` + `notifications` APIs
+- **Tooling:** ESLint 9, Vitest + Testing Library, jsdom
+- **Built with:** [Lovable](https://lovable.dev) (AI-paired builds), commits auto-sync to this repo
+
+---
+
+## Investor pitch deck & marketing video
+
+For anyone evaluating ProductiveYou as an investment, partnership, or hire — start here.
+
+### 15-slide pitch deck
+
+A self-contained PDF covering problem, solution, product, TAM / SAM / SOM, behavioural-science moat, business model, unit economics, why-now, competition, roadmap, team, and the ask.
+
+<p align="center">
+  <a href="./marketing/pitch-deck.pdf">
+    <img src="./marketing/thumbnails/pitch-deck.png" alt="Open the ProductiveYou pitch deck (15-page PDF)" width="640" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="./marketing/pitch-deck.pdf"><b>📊 marketing/pitch-deck.pdf</b></a> · 15 pages · 1920×1080 · 1.7 MB
+</p>
+
+### 2.5-minute marketing video
+
+A narrated walkthrough designed for VCs, angels, and partner intros. Same content as the deck, scripted as a story.
+
+<p align="center">
+  <a href="./marketing/investor-pitch.mp4">
+    <img src="./marketing/thumbnails/investor-pitch.png" alt="Watch the ProductiveYou investor pitch (2.5 minutes, MP4)" width="720" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="./marketing/investor-pitch.mp4"><b>▶ marketing/investor-pitch.mp4</b></a> · 143s · 1920×1080 · H.264 + AAC · 3.7 MB
+</p>
+
+<details>
+<summary>Inline player (works on GitHub)</summary>
+
+https://github.com/productdecoded/productiveyou/raw/main/marketing/investor-pitch.mp4
+
+</details>
+
+### The numbers in the deck (with sources)
+
+| Topic | Headline | Source |
+| --- | --- | --- |
+| Productivity apps TAM | $14.5B in 2026 → $30.9B by 2034 (9.9% CAGR) | [Fortune Business Insights](https://www.fortunebusinessinsights.com/productivity-apps-market-110254) |
+| Mental health apps TAM | $8.6B in 2026 → $35.3B by 2034 (19.2% CAGR) | [Fortune Business Insights](https://www.fortunebusinessinsights.com/mental-health-apps-market-109012) |
+| Digital mental health TAM | $16.3B in 2026 → $58.4B by 2036 (13.6% CAGR) | [Meticulous Research](https://www.meticulousresearch.com/product/digital-mental-health-market-6660) |
+| Habit formation | Median 66 days, range 18–254 | [Lally et al., *EJSP*, 2010](https://doi.org/10.1002/ejsp.674) · [interview, 2025](https://www.surrey.ac.uk/news/does-it-really-take-66-days-form-habit-we-asked-expert-dr-pippa-lally) |
+| "21-day myth" debunked / 10-week clinical guidance | Origin in 1960s plastic-surgery anecdote, not habit science | [Gardner, Lally & Wardle, *BJGP*, 2012](https://pmc.ncbi.nlm.nih.gov/articles/PMC3505409/) |
+| Productivity lost to depression / anxiety | ~$1T per year (global, pre-COVID baseline) | [WHO mental health team](https://www.who.int/teams/mental-health-and-substance-use) |
+| % of daily behaviour that is habitual | ~40% | Wood, Quinn & Kashy, *JPSP*, 2002 |
+
+The full citations live in [`marketing/README.md`](./marketing/README.md). To regenerate the videos and deck from scratch, see the build instructions in that file.
+
+### How the unit economics in the deck were modelled
+
+> Note: these are forward projections, not historical traction. They are
+> calibrated against public benchmarks from Calm, Headspace, Notion, and
+> Streaks. Real numbers will replace these as the product ships paid tiers.
+
+| Lever | Assumption | Why |
+| --- | --- | --- |
+| Blended ARPU | $42 / yr | 8% paid conversion, 60/40 annual/monthly mix |
+| CAC | $9 | Content + referral; Chrome extension lowers paid social need by ~30% |
+| Gross margin | ~88% | Supabase + Cloudflare scale linearly with users |
+| Payback | <4 months | At $42 ARPU vs. $9 CAC |
+| LTV / CAC | ~11x | Assumes 24-month average lifetime |
+
+The deck and pitch video frame the **2-year discipline window** as the wedge: nobody else sells a habit-forming product with a 730-day default horizon, in a market where every competitor is optimising for the wrong number (21 days).
 
 ---
 
@@ -48,6 +175,13 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 ```
 .
 ├── chrome-extension/    # Companion MV3 extension (popup + new-tab dashboard)
+├── marketing/           # Demo + investor videos, pitch-deck PDF, build scripts
+│   ├── demo.mp4
+│   ├── investor-pitch.mp4
+│   ├── pitch-deck.pdf
+│   ├── README.md        # How to regenerate everything
+│   ├── scripts/         # slidekit + build_demo + build_pitch_video + build_deck
+│   └── thumbnails/      # Cover frames + voiceover manifests
 ├── public/              # Static assets
 ├── src/
 │   ├── components/      # Habits, journal, streak, collectibles, UI primitives
@@ -65,20 +199,13 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 
 ## Local development
 
-You need Node.js 18+ and either `bun` or `npm`. Install with [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) if you don’t have Node.
+You need Node.js 18+ and either `bun` or `npm`. Install with [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) if you don't have Node.
 
 ```sh
-# 1. Clone
 git clone https://github.com/productdecoded/productiveyou.git
 cd productiveyou
-
-# 2. Install deps
 npm install            # or: bun install
-
-# 3. Configure env
 cp .env.example .env   # then fill in the Supabase values below
-
-# 4. Run dev server
 npm run dev            # http://localhost:8080
 ```
 
@@ -108,8 +235,6 @@ VITE_SUPABASE_PUBLISHABLE_KEY="<your-supabase-anon-key>"
 
 ## Editing the app
 
-There are several supported workflows:
-
 ### 1. Edit in Lovable (recommended for AI-assisted changes)
 
 Open the [Lovable project](https://lovable.dev/projects/a21fcc10-3f98-4280-840a-6903d9629a14) and prompt. Every change is committed back to this repo automatically.
@@ -130,10 +255,9 @@ Use the pencil icon on any file, commit on the same branch.
 
 ## Chrome extension
 
-A Manifest V3 companion extension lives in [`chrome-extension/`](./chrome-extension). It mirrors today’s habits & non-negotiables into a popup, overrides the new-tab page with your streak/quote, and surfaces smart reminders.
+A Manifest V3 companion extension lives in [`chrome-extension/`](./chrome-extension). It mirrors today's habits & non-negotiables into a popup, overrides the new-tab page with your streak/quote, and surfaces smart reminders.
 
 ```sh
-# Load it unpacked:
 # 1. Open chrome://extensions
 # 2. Toggle "Developer mode" on
 # 3. Click "Load unpacked"

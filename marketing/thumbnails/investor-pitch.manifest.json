@@ -1,0 +1,80 @@
+{
+  "voice": "Samantha",
+  "rate_wpm": 170,
+  "slides": [
+    {
+      "index": 1,
+      "kicker": "INVESTOR PITCH \u00b7 1 / 12",
+      "title": "ProductiveYou",
+      "voiceover": "ProductiveYou \u2014 the discipline operating system for the next billion knowledge workers."
+    },
+    {
+      "index": 2,
+      "kicker": "THE PROBLEM \u00b7 2 / 12",
+      "title": "",
+      "voiceover": "The World Health Organization estimates depression and anxiety cost the global economy one trillion dollars in lost productivity each year."
+    },
+    {
+      "index": 3,
+      "kicker": "WHY HABIT APPS FAIL \u00b7 3 / 12",
+      "title": "The 21-day myth has bankrupted a generation.",
+      "voiceover": "The twenty-one day myth has bankrupted a generation of habit apps. Science says sixty-six days. Most apps lose ninety percent of users in four weeks. They punish missed days \u2014 the opposite of how behavior actually changes."
+    },
+    {
+      "index": 4,
+      "kicker": "OUR SOLUTION \u00b7 4 / 12",
+      "title": "A 2-year monk-mode operating system.",
+      "voiceover": "Our solution is a two-year monk-mode operating system. Non-negotiables paired with daily habits. Streaks survive a missed day. Journal, todo, and wrapped recap in one product. Plus a Chrome companion that turns every new tab into a discipline checkpoint."
+    },
+    {
+      "index": 5,
+      "kicker": "MARKET SIZE \u00b7 5 / 12",
+      "title": "Two adjacent markets, one product.",
+      "voiceover": "We sit at the intersection of two compounding markets \u2014 productivity apps at fourteen point five billion, and mental health apps at eight point six billion, both growing double digits."
+    },
+    {
+      "index": 6,
+      "kicker": "OUR WEDGE \u00b7 6 / 12",
+      "title": "",
+      "voiceover": "We are not selling a habit. We are selling seven hundred and thirty days. James Clear sold twenty million copies telling people to build small habits. We sell the operating system that runs them."
+    },
+    {
+      "index": 7,
+      "kicker": "BUSINESS MODEL \u00b7 7 / 12",
+      "title": "Freemium \u00bb Pro \u00bb Coach.",
+      "voiceover": "Business model is freemium consumer SaaS. Pro at six dollars a month. Coach tier at twenty-four dollars per seat for therapists, coaches, and corporate wellness. The Chrome extension is a no-friction growth loop into the web app."
+    },
+    {
+      "index": 8,
+      "kicker": "UNIT ECONOMICS \u00b7 8 / 12",
+      "title": "The math investors actually care about.",
+      "voiceover": "Blended ARPU around forty-two dollars. CAC nine dollars driven by content and the extension referral loop. Eighty-eight percent gross margins. Payback under four months. LTV to CAC of eleven at scale."
+    },
+    {
+      "index": 9,
+      "kicker": "WHY NOW \u00b7 9 / 12",
+      "title": "Three tailwinds, one window.",
+      "voiceover": "Three tailwinds. Mental health spend is up fifty-four percent post-pandemic. Gen Z spending on self-improvement apps quadrupled since twenty-twenty. And AI tooling cut our build cost ten-x."
+    },
+    {
+      "index": 10,
+      "kicker": "COMPETITION \u00b7 10 / 12",
+      "title": "Where existing players leave a gap.",
+      "voiceover": "Streaks and Habitica are gamified and fragile. Calm and Headspace are content with no tracking. Notion and Todoist demand a setup tax. We win on dual-system, journaling, Wrapped, and browser surface area."
+    },
+    {
+      "index": 11,
+      "kicker": "ROADMAP \u00b7 11 / 12",
+      "title": "From v1 to platform.",
+      "voiceover": "Roadmap: native mobile in Q one. Coach mode and B two B pilots in Q two. AI nudges trained on consented journal sentiment in Q three. And a viral Wrapped two point oh in Q four."
+    },
+    {
+      "index": 12,
+      "kicker": "",
+      "title": "Raise: $1.2M Seed",
+      "voiceover": "We are raising one point two million seed. Eighteen month runway to two hundred fifty thousand users, one point four million in A R R, and live coach-tier pilots. Visit productive you dot lovable dot app."
+    }
+  ],
+  "total_duration_s": 142.81,
+  "output": "/Users/aritra.de/Desktop/Cursor Work/productiveyou/marketing/investor-pitch.mp4"
+}
