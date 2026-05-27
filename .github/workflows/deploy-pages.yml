@@ -51,12 +51,28 @@ jobs:
       - name: Build (Vite, base=/productiveyou/)
         env:
           BASE_PATH: /productiveyou/
-          # Supabase config: prefer GH Actions Variables, fall back to the
-          # repo's committed .env so the build always succeeds.
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          VITE_SUPABASE_PROJECT_ID: ${{ vars.VITE_SUPABASE_PROJECT_ID }}
+          # Supabase config is intentionally NOT passed through here.
+          # Vite auto-loads the committed .env file at build time. If we set
+          # VITE_SUPABASE_* via the workflow and the corresponding GH Actions
+          # Variables aren't defined, GitHub passes an empty string which
+          # then shadows the .env file value — silently shipping a broken
+          # build with createClient("", "") that throws at runtime.
+          # To override (e.g. point the mirror at a different Supabase
+          # project), uncomment + populate via repo Settings → Variables.
+          # VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          # VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          # VITE_SUPABASE_PROJECT_ID: ${{ vars.VITE_SUPABASE_PROJECT_ID }}
         run: npm run build
+
+      - name: Sanity check — Supabase URL baked into bundle
+        run: |
+          set -e
+          if ! /usr/bin/grep -qE 'https://[a-z0-9]+\.supabase\.co' dist/assets/index-*.js; then
+            echo "✗ Supabase URL is missing from the built bundle — the app will white-screen."
+            echo "  Either the .env file was empty or a workflow env var shadowed it with ''."
+            exit 1
+          fi
+          echo "✓ Supabase URL present in bundle"
 
       - name: Add SPA fallback + disable Jekyll
         run: |
