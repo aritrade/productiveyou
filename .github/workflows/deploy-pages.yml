@@ -1,16 +1,21 @@
 name: Deploy to GitHub Pages
 
 # Auto-publishes a parallel mirror of the app at
-#   https://productdecoded.github.io/productiveyou/
+#   https://aritrade.github.io/productiveyou/
 # whenever main moves. Independent of Lovable's manual publish flow, so
 # if Lovable's UI ever gets stuck again, this URL always tracks main.
+#
+# The host is aritrade.github.io (not productdecoded.github.io) because
+# this GitHub account was renamed from productdecoded → aritrade. GitHub
+# redirects repository URLs but NOT Pages subdomains, so the only working
+# Pages URL is the one tied to the current username.
 #
 # Supabase auth on this mirror requires:
 #   1. VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY GitHub Actions
 #      variables (Repository Settings → Secrets and variables → Actions →
 #      Variables). Defaults to the .env file in the repo if unset.
 #   2. The Supabase project's Authentication → URL Configuration must list
-#      https://productdecoded.github.io as an allowed Site URL / redirect.
+#      https://aritrade.github.io as an allowed Site URL / redirect.
 
 on:
   push:
