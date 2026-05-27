@@ -1,73 +1,163 @@
-# Welcome to your Lovable project
+# Monk Mode Activated — Productivity Tracker
 
-## Project info
+> Stay disciplined. Track habits, hold yourself to non-negotiables, journal daily, and build a multi-year consistency streak.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+A minimalist, dark-themed productivity tracker built with React + Vite + Supabase and shipped via [Lovable](https://lovable.dev). Comes with a companion Chrome extension for at-a-glance progress on every new tab.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## Live links
 
-**Use Lovable**
+| What | URL |
+| --- | --- |
+| **Production app** | https://productiveyou.lovable.app |
+| **Preview build** | https://preview--productiveyou.lovable.app |
+| **Lovable editor** | https://lovable.dev/projects/a21fcc10-3f98-4280-840a-6903d9629a14 |
+| **GitHub repo** | https://github.com/productdecoded/productiveyou |
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+> Open the production link above to start using the tracker, or open the Lovable editor to keep building with AI prompts.
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Daily Habits & Non-Negotiables** — Customize the rules you live by and the habits you’re building.
+- **Journal** — Quick text, voice notes, and photo entries with captions.
+- **Todo list** — Lightweight daily tasks that reset at midnight (IST).
+- **Streak tracker** — Visualize a 2-year consistency journey day-by-day.
+- **History view** — Browse every past day’s completion percentage.
+- **Wrapped** — A Spotify-Wrapped-style year-end recap of your discipline.
+- **Auth + cloud sync** — Email / OAuth via Supabase, data persisted per-user.
+- **Dark / light theme** with smooth transitions.
+- **Companion Chrome extension** — Toggle habits from the toolbar, see your streak on every new tab, and get smart morning / midday / evening nudges.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Tech stack
 
-Follow these steps:
+- **Frontend:** Vite, React 18, TypeScript, React Router, TanStack Query
+- **UI:** Tailwind CSS, shadcn/ui (Radix Primitives), lucide-react, recharts
+- **Forms & validation:** react-hook-form + zod
+- **Backend:** Supabase (Auth, Postgres, Storage)
+- **PDF / export:** jsPDF, html2canvas
+- **Tooling:** ESLint, Vitest, Testing Library
+- **Built with:** [Lovable](https://lovable.dev)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Project structure
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+.
+├── chrome-extension/    # Companion MV3 extension (popup + new-tab dashboard)
+├── public/              # Static assets
+├── src/
+│   ├── components/      # Habits, journal, streak, collectibles, UI primitives
+│   ├── hooks/           # useAuth, useMidnightReset, etc.
+│   ├── integrations/    # Supabase client
+│   ├── lib/             # Daily-entry helpers, utils
+│   ├── pages/           # Auth, Onboarding, Index, History, Wrapped, NotFound
+│   └── main.tsx
+├── supabase/            # config.toml + SQL migrations
+├── index.html
+└── package.json
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Local development
 
-**Use GitHub Codespaces**
+You need Node.js 18+ and either `bun` or `npm`. Install with [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) if you don’t have Node.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```sh
+# 1. Clone
+git clone https://github.com/productdecoded/productiveyou.git
+cd productiveyou
 
-## What technologies are used for this project?
+# 2. Install deps
+npm install            # or: bun install
 
-This project is built with:
+# 3. Configure env
+cp .env.example .env   # then fill in the Supabase values below
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# 4. Run dev server
+npm run dev            # http://localhost:8080
+```
 
-## How can I deploy this project?
+### Environment variables
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Create a `.env` file in the repo root with:
 
-## Can I connect a custom domain to my Lovable project?
+```env
+VITE_SUPABASE_PROJECT_ID="<your-supabase-project-id>"
+VITE_SUPABASE_URL="https://<your-supabase-project-id>.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="<your-supabase-anon-key>"
+```
 
-Yes, you can!
+### Useful scripts
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Production build |
+| `npm run build:dev` | Development-mode build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run Vitest once |
+| `npm run test:watch` | Run Vitest in watch mode |
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+
+## Editing the app
+
+There are several supported workflows:
+
+### 1. Edit in Lovable (recommended for AI-assisted changes)
+
+Open the [Lovable project](https://lovable.dev/projects/a21fcc10-3f98-4280-840a-6903d9629a14) and prompt. Every change is committed back to this repo automatically.
+
+### 2. Edit locally in your IDE
+
+Clone the repo, edit, commit and push to `main`. Pushes are mirrored back into Lovable.
+
+### 3. Edit directly on GitHub
+
+Use the pencil icon on any file, commit on the same branch.
+
+### 4. GitHub Codespaces
+
+`Code → Codespaces → New codespace` to get an in-browser dev environment.
+
+---
+
+## Chrome extension
+
+A Manifest V3 companion extension lives in [`chrome-extension/`](./chrome-extension). It mirrors today’s habits & non-negotiables into a popup, overrides the new-tab page with your streak/quote, and surfaces smart reminders.
+
+```sh
+# Load it unpacked:
+# 1. Open chrome://extensions
+# 2. Toggle "Developer mode" on
+# 3. Click "Load unpacked"
+# 4. Select the chrome-extension/ folder
+```
+
+See [`chrome-extension/README.md`](./chrome-extension/README.md) for full details (including required icons).
+
+---
+
+## Deployment
+
+The app auto-deploys via Lovable. To publish a new version:
+
+1. Open the [Lovable editor](https://lovable.dev/projects/a21fcc10-3f98-4280-840a-6903d9629a14)
+2. Click **Share → Publish**
+3. The latest commit goes live at https://productiveyou.lovable.app
+
+### Custom domain
+
+In Lovable: **Project → Settings → Domains → Connect Domain**. Docs: https://docs.lovable.dev/features/custom-domain#custom-domain
+
+---
+
+## License
+
+Private project — all rights reserved unless a `LICENSE` file is added.
