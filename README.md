@@ -10,12 +10,13 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 
 | What | URL |
 | --- | --- |
-| **Production app** | https://productiveyou.lovable.app |
+| **Production app (Lovable)** | https://productiveyou.lovable.app |
+| **GitHub Pages mirror** | https://productdecoded.github.io/productiveyou/ |
 | **Preview build** | https://preview--productiveyou.lovable.app |
 | **Lovable editor** | https://lovable.dev/projects/a21fcc10-3f98-4280-840a-6903d9629a14 |
 | **GitHub repo** | https://github.com/productdecoded/productiveyou |
 
-> Open the production link above to start using the tracker.
+> Open the production link above to start using the tracker. The **GitHub Pages mirror** serves the identical build but auto-deploys on every push to `main` via [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) — it's the permanent fallback if Lovable's manual Publish flow ever stalls, and the place to confirm the latest `main` is actually live. Note: Supabase sign-in on the mirror requires `https://productdecoded.github.io` to be added to the Supabase project's allowed Site URLs (Authentication → URL Configuration). Until then, the mirror loads but auth will redirect-loop.
 
 ---
 
@@ -393,9 +394,12 @@ Be honest with users: Supabase (and AWS underneath) can technically read the row
 │   │   └── monk-mode-chrome-extension.zip  # 18 KB Chrome extension bundle
 │   ├── scripts/         # slidekit + build_demo + build_pitch_video + build_deck + build-apk + scaffold-twa
 │   └── thumbnails/      # Cover frames + voiceover manifests
+├── .github/workflows/
+│   └── deploy-pages.yml      # Auto-deploy the app to productdecoded.github.io/productiveyou/ on every push to main
 ├── public/              # Static assets served as-is at site root
 │   ├── manifest.webmanifest  # PWA manifest (iOS + Android + desktop install)
-│   ├── sw.js                 # Service worker (offline app-shell, no Supabase caching)
+│   ├── sw.js                 # Service worker (offline app-shell, no Supabase caching, BASE-aware)
+│   ├── 404.html              # SPA fallback shim — GitHub Pages encodes the deep-link path; index.html decodes it
 │   ├── icons/                # PWA icons 72/96/128/144/152/192/384/512 + maskable + apple-touch
 │   ├── .well-known/
 │   │   └── assetlinks.json   # Digital Asset Link verifying the Android TWA → full-screen mode
