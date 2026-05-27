@@ -52,7 +52,7 @@ const App = () => (
         <AuthProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
             <Routes>
               <Route path="/auth" element={<AuthRoute />} />
               <Route path="/onboarding" element={<OnboardingRoute />} />

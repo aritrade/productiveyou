@@ -1,0 +1,95 @@
+name: Deploy to GitHub Pages
+
+# Auto-publishes a parallel mirror of the app at
+#   https://productdecoded.github.io/productiveyou/
+# whenever main moves. Independent of Lovable's manual publish flow, so
+# if Lovable's UI ever gets stuck again, this URL always tracks main.
+#
+# Supabase auth on this mirror requires:
+#   1. VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY GitHub Actions
+#      variables (Repository Settings → Secrets and variables → Actions →
+#      Variables). Defaults to the .env file in the repo if unset.
+#   2. The Supabase project's Authentication → URL Configuration must list
+#      https://productdecoded.github.io as an allowed Site URL / redirect.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, but don't cancel in-progress runs
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (Vite, base=/productiveyou/)
+        env:
+          BASE_PATH: /productiveyou/
+          # Supabase config: prefer GH Actions Variables, fall back to the
+          # repo's committed .env so the build always succeeds.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_SUPABASE_PROJECT_ID: ${{ vars.VITE_SUPABASE_PROJECT_ID }}
+        run: npm run build
+
+      - name: Add SPA fallback + disable Jekyll
+        run: |
+          # GH Pages serves 404.html for any unmatched route — public/404.html
+          # is already copied into dist/, but if it's missing for any reason
+          # fall back to a copy of index.html (also valid for SPA routing).
+          if [ ! -f dist/404.html ]; then
+            cp dist/index.html dist/404.html
+          fi
+          touch dist/.nojekyll
+          ls -la dist/
+
+      - name: Verify PWA assets in build output
+        run: |
+          set -e
+          for f in manifest.webmanifest sw.js .well-known/assetlinks.json \
+                   icons/icon-192.png icons/icon-512.png \
+                   icons/icon-maskable-512.png icons/apple-touch-icon.png \
+                   favicon.ico 404.html; do
+            if [ ! -f "dist/$f" ]; then
+              echo "✗ missing dist/$f"
+              exit 1
+            fi
+            printf "  ✓ dist/%s  (%s bytes)\n" "$f" "$(wc -c < "dist/$f" | tr -d ' ')"
+          done
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

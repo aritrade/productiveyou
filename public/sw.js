@@ -11,13 +11,17 @@
  * expiry behave correctly.
  */
 
-const CACHE_NAME = "monk-mode-v1";
+const CACHE_NAME = "monk-mode-v2";
+// SW lives next to index.html. Its registration scope tells us the deployment
+// root (e.g. "/" on Lovable, "/productiveyou/" on the GH Pages mirror), so
+// every shell URL is relative to that.
+const BASE = new URL(self.registration?.scope || "./", self.location.href).pathname;
 const APP_SHELL = [
-  "/",
-  "/manifest.webmanifest",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png",
-  "/icons/apple-touch-icon.png",
+  `${BASE}`,
+  `${BASE}manifest.webmanifest`,
+  `${BASE}icons/icon-192.png`,
+  `${BASE}icons/icon-512.png`,
+  `${BASE}icons/apple-touch-icon.png`,
 ];
 
 self.addEventListener("install", (event) => {
@@ -53,16 +57,17 @@ self.addEventListener("fetch", (event) => {
   // but this is a guardrail in case we ever proxy through /api/*)
   if (url.pathname.startsWith("/api/") || url.pathname.includes("supabase")) return;
 
-  // SPA navigations: network-first, fall back to cached index for offline
+  // SPA navigations: network-first, fall back to cached index for offline.
+  // BASE handles both the Lovable root deploy and the GH Pages /productiveyou/ deploy.
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
         .then((res) => {
           const copy = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put("/", copy));
+          caches.open(CACHE_NAME).then((c) => c.put(BASE, copy));
           return res;
         })
-        .catch(() => caches.match("/"))
+        .catch(() => caches.match(BASE))
     );
     return;
   }
