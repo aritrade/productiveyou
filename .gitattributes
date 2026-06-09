@@ -1,0 +1,17 @@
+# Hide the language breakdown on the repo card / "Languages" bar.
+# This only excludes these files from GitHub Linguist statistics — the code
+# is unchanged and diffs are still shown normally (unlike linguist-vendored).
+*.ts    linguist-detectable=false
+*.tsx   linguist-detectable=false
+*.js    linguist-detectable=false
+*.jsx   linguist-detectable=false
+*.mjs   linguist-detectable=false
+*.cjs   linguist-detectable=false
+*.py    linguist-detectable=false
+*.html  linguist-detectable=false
+*.css   linguist-detectable=false
+*.scss  linguist-detectable=false
+*.sh    linguist-detectable=false
+*.bash  linguist-detectable=false
+*.sql   linguist-detectable=false
+*.pgsql linguist-detectable=false
