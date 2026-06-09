@@ -6,6 +6,16 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 
 ---
 
+## See it in 15 seconds
+
+A quick, no-signup look at the whole product — the dashboard, the 2-year streak grid, non-negotiables, daily habits, collectibles, multi-modal journal, history, and the Spotify-style Wrapped recap (in both dark and light themes).
+
+![Animated product tour of Monk Mode Activated — dashboard, streak grid, non-negotiables, habits, collectibles, journal, history, and Wrapped](./marketing/product-tour.gif)
+
+> Prefer the real thing? Jump to the [live app](#live-links) below — it's free and installs on any device.
+
+---
+
 ## The story — why this exists
 
 I didn't set out to build a product. I set out to fix my own day.
