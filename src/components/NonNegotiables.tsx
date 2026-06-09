@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ShieldCheck, ShieldX, Pencil, Lock, Plus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { isDemoMode, setDemoProfile } from "@/lib/demo";
 
 interface Rule {
   id: string;
@@ -28,6 +29,11 @@ const NonNegotiables = ({ rules, checked, onChange, onRulesUpdate }: Props) => {
   const saveRules = async (updated: Rule[]) => {
     if (!user) return;
     onRulesUpdate?.(updated);
+    if (isDemoMode()) {
+      setDemoProfile({ custom_non_negotiables: updated });
+      await refreshProfile();
+      return;
+    }
     await supabase
       .from("profiles")
       .update({ custom_non_negotiables: updated as any })

@@ -55,6 +55,21 @@ A quick, no-signup look at the whole product — the dashboard, the 2-year strea
 
 ---
 
+## Try the demo (no signup)
+
+Want to explore before committing to anything? The live app ships with a one-click **demo mode** that loads a fully-populated account — a ~248-day streak, journal entries, daily todos, unlocked collectibles, and a Wrapped recap — so you can tour every feature in seconds. It runs entirely in your browser: **nothing is saved and it never touches real user data.**
+
+Two ways in, both on the **[sign-in page](https://productiveyou.lovable.app/auth)**:
+
+| Option | How |
+| --- | --- |
+| **One click** | Tap **“Explore the live demo — no signup”** — you land straight on the dashboard. |
+| **Demo credentials** | Sign in with **Email:** `demo@productiveyou.app` · **Password:** `monkmode` |
+
+Once inside, a **Demo mode** banner sits at the top of the dashboard; click **Exit demo** there whenever you want to leave and create your own account.
+
+---
+
 ## The story — why this exists
 
 I didn't set out to build a product. I set out to fix my own day.
@@ -110,6 +125,8 @@ That's the positioning in one line: **not a habit tracker you'll abandon in two 
 | **GitHub repo** | https://github.com/aritrade/productiveyou |
 
 > Open the production link above to start using the tracker.
+>
+> **New here?** Try the **[demo account](#try-the-demo-no-signup)** for an instant, no-signup walkthrough with sample data.
 
 ---
 

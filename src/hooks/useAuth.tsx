@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
+import { isDemoMode, disableDemo, getDemoProfile, DEMO_USER, DEMO_SESSION } from "@/lib/demo";
 
 interface Profile {
   id: string;
@@ -78,6 +79,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const refreshProfile = async () => {
+    if (isDemoMode()) {
+      setProfile(getDemoProfile() as Profile);
+      return;
+    }
     if (user) {
       const p = await fetchProfile(user.id);
       setProfile(p);
@@ -85,6 +90,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    if (isDemoMode()) {
+      setSession(DEMO_SESSION as Session);
+      setUser(DEMO_USER as User);
+      setProfile(getDemoProfile() as Profile);
+      setLoading(false);
+      return;
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setSession(session);
@@ -121,7 +134,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (isDemoMode()) {
+      disableDemo();
+    } else {
+      await supabase.auth.signOut();
+    }
     setUser(null);
     setSession(null);
     setProfile(null);

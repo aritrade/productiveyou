@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CheckSquare, Pencil, Lock, Plus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { isDemoMode, setDemoProfile } from "@/lib/demo";
 
 interface Habit {
   id: string;
@@ -28,6 +29,11 @@ const DailyHabits = ({ habits, checked, onChange, onHabitsUpdate }: Props) => {
   const saveHabits = async (updated: Habit[]) => {
     if (!user) return;
     onHabitsUpdate?.(updated);
+    if (isDemoMode()) {
+      setDemoProfile({ custom_habits: updated });
+      await refreshProfile();
+      return;
+    }
     await supabase
       .from("profiles")
       .update({ custom_habits: updated as any })

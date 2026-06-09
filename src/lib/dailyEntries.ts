@@ -1,4 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
+import {
+  isDemoMode,
+  demoGetEntry,
+  demoAllEntries,
+  demoEntriesRange,
+  demoUpsertEntry,
+  demoDeleteAllEntries,
+} from "@/lib/demo";
 
 export interface DailyEntry {
   id?: string;
@@ -37,6 +45,10 @@ export const upsertDailyEntry = async (
   entry: Omit<DailyEntry, "id" | "created_at" | "updated_at">,
   userId: string
 ): Promise<void> => {
+  if (isDemoMode()) {
+    demoUpsertEntry(entry);
+    return;
+  }
   const { error } = await supabase
     .from("daily_entries")
     .upsert(
@@ -56,6 +68,9 @@ export const upsertDailyEntry = async (
 
 /** Fetch a single day's entry */
 export const fetchDailyEntry = async (date: string, userId: string): Promise<DailyEntry | null> => {
+  if (isDemoMode()) {
+    return demoGetEntry(date);
+  }
   const { data, error } = await supabase
     .from("daily_entries")
     .select("*")
@@ -83,6 +98,9 @@ export const fetchDailyEntry = async (date: string, userId: string): Promise<Dai
 
 /** Fetch entries for a date range */
 export const fetchEntriesRange = async (from: string, to: string, userId: string): Promise<DailyEntry[]> => {
+  if (isDemoMode()) {
+    return demoEntriesRange(from, to);
+  }
   const { data, error } = await supabase
     .from("daily_entries")
     .select("*")
@@ -110,6 +128,9 @@ export const fetchEntriesRange = async (from: string, to: string, userId: string
 
 /** Fetch all entries for a user */
 export const fetchAllEntries = async (userId: string): Promise<DailyEntry[]> => {
+  if (isDemoMode()) {
+    return demoAllEntries();
+  }
   const { data, error } = await supabase
     .from("daily_entries")
     .select("*")
@@ -135,6 +156,10 @@ export const fetchAllEntries = async (userId: string): Promise<DailyEntry[]> => 
 
 /** Delete all entries for a user (for reset) */
 export const deleteAllEntries = async (userId: string): Promise<void> => {
+  if (isDemoMode()) {
+    demoDeleteAllEntries();
+    return;
+  }
   const { error } = await supabase
     .from("daily_entries")
     .delete()

@@ -10,8 +10,9 @@ import DailyQuote from "@/components/DailyQuote";
 import StreakTracker from "@/components/StreakTracker";
 import Collectibles from "@/components/Collectibles";
 import ThemeToggle from "@/components/ThemeToggle";
-import { Zap, History, Sparkles, LogOut, Settings } from "lucide-react";
+import { Zap, History, Sparkles, LogOut, Settings, PlayCircle } from "lucide-react";
 import { useMidnightReset } from "@/hooks/useMidnightReset";
+import { isDemoMode } from "@/lib/demo";
 import {
   getISTDateString,
   upsertDailyEntry,
@@ -290,6 +291,23 @@ const Index = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+        {isDemoMode() && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/10 px-4 py-3">
+            <div className="flex items-center gap-2.5">
+              <PlayCircle className="h-4 w-4 text-primary shrink-0" />
+              <p className="text-xs text-foreground">
+                <span className="font-heading font-semibold tracking-wider uppercase text-primary">Demo mode</span>
+                <span className="text-muted-foreground"> — explore freely with sample data. Nothing here is saved.</span>
+              </p>
+            </div>
+            <button
+              onClick={signOut}
+              className="shrink-0 rounded-lg border border-border bg-secondary px-3 py-1.5 text-[10px] font-heading tracking-wider uppercase text-secondary-foreground hover:bg-secondary/80 transition-colors"
+            >
+              Exit demo
+            </button>
+          </div>
+        )}
         {profile?.display_name && (
           <p className="text-sm font-heading text-muted-foreground">
             {new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening"}, <span className="text-primary font-semibold">{profile.display_name}</span> 🔥

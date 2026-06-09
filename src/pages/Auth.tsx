@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
-import { Zap, Mail, Lock, User, Loader2 } from "lucide-react";
+import { Zap, Mail, Lock, User, Loader2, PlayCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ThemeToggle from "@/components/ThemeToggle";
+import { enableDemo, disableDemo, isDemoCredentials, DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/demo";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -13,9 +14,23 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
+  const startDemo = () => {
+    enableDemo();
+    // Full reload so the auth provider boots into demo mode and lands on the dashboard.
+    window.location.assign(import.meta.env.BASE_URL || "/");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Demo credentials log straight into the simulated account.
+    if (!isSignUp && isDemoCredentials(email, password)) {
+      startDemo();
+      return;
+    }
+
     setLoading(true);
+    disableDemo();
 
     try {
       if (isSignUp) {
@@ -90,6 +105,27 @@ const Auth = () => {
             <p className="text-xs text-muted-foreground mt-1">
               {isSignUp ? "Discipline is the bridge between goals and accomplishment" : "Stay locked in. Your future self will thank you."}
             </p>
+          </div>
+
+          {/* Try the demo — no signup */}
+          <button
+            onClick={startDemo}
+            className="btn-primary w-full flex items-center justify-center gap-2"
+          >
+            <PlayCircle className="h-4 w-4" />
+            Explore the live demo — no signup
+          </button>
+          <p className="text-center text-[11px] text-muted-foreground -mt-3">
+            Loads a fully-populated account so you can tour every feature. Nothing is saved.
+          </p>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-3 text-muted-foreground font-heading tracking-wider">then sign in for real</span>
+            </div>
           </div>
 
           {/* Google Sign In */}

@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { BookOpen, Mic, MicOff, Save, ImagePlus, X, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { isDemoMode } from "@/lib/demo";
 
 interface JournalEntry {
   id: string;
@@ -84,6 +85,10 @@ const JournalSection = ({ entries, onSave }: Props) => {
 
   const uploadPhotos = async (): Promise<{ url: string; caption: string }[]> => {
     if (!user) return [];
+    // In demo mode keep photos client-side (object URLs) — no backend upload.
+    if (isDemoMode()) {
+      return photos.map((p) => ({ url: p.preview, caption: p.caption }));
+    }
     const uploaded: { url: string; caption: string }[] = [];
     for (const photo of photos) {
       const ext = photo.file.name.split(".").pop() || "jpg";
