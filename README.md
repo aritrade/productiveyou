@@ -6,6 +6,45 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 
 ---
 
+## Tech stack at a glance
+
+**Frontend**
+&nbsp;
+![React 18](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-6-CA4245?style=flat-square&logo=reactrouter&logoColor=white)
+![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-FF4154?style=flat-square&logo=reactquery&logoColor=white)
+
+**UI**
+&nbsp;
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?style=flat-square&logo=shadcnui&logoColor=white)
+![Radix UI](https://img.shields.io/badge/Radix_UI-161618?style=flat-square&logo=radixui&logoColor=white)
+![Recharts](https://img.shields.io/badge/Recharts-FF6384?style=flat-square&logo=chartdotjs&logoColor=white)
+![lucide](https://img.shields.io/badge/lucide-F56565?style=flat-square&logo=lucide&logoColor=white)
+
+**Backend & data**
+&nbsp;
+![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+![AES-256](https://img.shields.io/badge/Encryption-AES--256-2E7D32?style=flat-square&logo=letsencrypt&logoColor=white)
+
+**Quality & build**
+&nbsp;
+![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=flat-square&logo=vitest&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-9-4B32C3?style=flat-square&logo=eslint&logoColor=white)
+![Built with Lovable](https://img.shields.io/badge/Built_with-Lovable-FF6F60?style=flat-square&logo=heart&logoColor=white)
+
+**Ships as**
+&nbsp;
+![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8?style=flat-square&logo=pwa&logoColor=white)
+![Android TWA](https://img.shields.io/badge/Android-TWA-3DDC84?style=flat-square&logo=android&logoColor=white)
+![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?style=flat-square&logo=googlechrome&logoColor=white)
+![License](https://img.shields.io/badge/license-All_Rights_Reserved-CB2431?style=flat-square)
+
+---
+
 ## See it in 15 seconds
 
 A quick, no-signup look at the whole product — the dashboard, the 2-year streak grid, non-negotiables, daily habits, collectibles, multi-modal journal, history, and the Spotify-style Wrapped recap (in both dark and light themes).
@@ -593,4 +632,6 @@ In Lovable: **Project → Settings → Domains → Connect Domain**. Docs: https
 
 ## License
 
-Private project — all rights reserved unless a `LICENSE` file is added.
+Copyright © 2026 Aritra De. All rights reserved.
+
+This is a private project. No permission is granted to use, copy, modify, or distribute this software or its assets without the express written consent of the copyright holder.
