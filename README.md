@@ -6,6 +6,51 @@ A minimalist, dark-themed productivity tracker built with React + Vite + Supabas
 
 ---
 
+## The story — why this exists
+
+I didn't set out to build a product. I set out to fix my own day.
+
+For a long stretch I was the person who *knew* exactly what to do — wake early, move my body, do the deep work first, stay off the feed, write something down before sleep — and still watched the days slip by half-lived. Not because I lacked the plan, but because nothing held the plan in front of me. The intentions lived in my head; my head is a leaky bucket. So I built a small, ugly tracker for an audience of one: **me.** A place to declare my non-negotiables out loud, check off the habits I was trying to become, and write a single honest line at the end of each day. It was scaffolding for a life I kept *almost* living.
+
+The thing that made it stick wasn't gamification. It was the **Zeigarnik effect** — the well-documented finding that the brain holds onto *unfinished* tasks far more insistently than completed ones. An open loop nags. A closed loop releases. Most productivity apps weaponise this badly: they leave you staring at a wall of red, every missed day an open wound that never closes, until the guilt itself becomes the reason you quit. I wanted the opposite. I wanted a tool that uses the Zeigarnik tension *for* me — surfacing the one open loop that matters today, letting me close it, and then *letting it go* — instead of hoarding my failures into a streak I'm terrified to break. Close the loop, feel the release, show up again tomorrow. That tiny, repeatable hit of *completion* is the whole engine.
+
+Once my own days started compounding, I realised the tool wasn't really about productivity. It was about **becoming someone over a long enough horizon that the change is undeniable.** That's when "my app" became **Monk Mode Activated**.
+
+---
+
+## What it actually is — product intent
+
+> **Monk Mode Activated is a 2-year discipline operating system that turns daily consistency into a visible identity — without the streak shame that kills every other habit app.**
+
+Everyone else sells a sprint. We sell the **arc.** The behavioural-science literature is unambiguous: real habit formation takes a *median of 66 days, ranging 18–254* (Lally et al., UCL, 2010) — not the 21-day myth that every competitor quietly optimises for. So the product is built around three convictions:
+
+- **Discipline is an identity, not a streak.** A 730-day default horizon reframes a missed Tuesday from "I failed" to "I'm 312 days into a two-year arc." Perspective is the feature.
+- **Forgiveness is a retention strategy.** Missed days are *logged, never punished.* The Zeigarnik loop closes gently — the streak survives, and so does the user.
+- **What you refuse to do matters as much as what you do.** Non-negotiables sit *above* habits — the hard floor elite performers actually operate from.
+
+The wedge is simple: in a market where every product is racing to optimise the *wrong number* (21 days), we own the only number the research supports (66+), and we frame it inside the horizon that actually changes a life (2 years).
+
+## Who it's for — market fit & personas
+
+This lives at the intersection of two fast-growing markets — **productivity apps** ($14.5B → $30.9B by 2034) and **mental-health / behaviour-change apps** ($8.6B → $35.3B by 2034). We're not a to-do list and we're not a meditation app; we're the disciplined spine between them. The people who feel that gap most:
+
+| Persona | Who they are | The pain we close | What hooks them |
+| --- | --- | --- | --- |
+| **The Self-Optimiser** | 22–35, reads atomic-habits-adjacent content, has tried (and churned out of) five habit apps | Every app shamed them into quitting after one missed day | Forgiving streak + the 2-year identity arc |
+| **The Quiet Rebuilder** | Coming out of burnout, breakup, or a rough year; wants to *become someone* again | Tools feel either clinical (therapy apps) or hollow (gamified streaks) | Daily journal + non-negotiables as a private hard floor |
+| **The Deep Worker** | Founder, creator, grad student, athlete — performance is their living | Willpower dies in the browser; the new tab is a doomscroll launchpad | Chrome extension turns every new tab into a discipline checkpoint |
+| **The Reflective Finisher** | Loves the year-in-review moment, screenshots their Spotify Wrapped | No reflection layer that compounds learning over time | **Wrapped** — a Spotify-style year-end recap of their discipline |
+
+The common thread: people who don't need *more* tasks — they need a system that keeps the *right* loops open just long enough to close them, and a horizon long enough to make the change undeniable.
+
+## How we show up — brand & positioning
+
+**Monk Mode Activated** is deliberately monastic: a dark, quiet, distraction-free room for the version of you that's done negotiating. The brand voice is calm, direct, and a little stern — a coach who *forgives* the missed day but never lets you forget the arc. No confetti, no guilt, no streak-anxiety. Just a hard floor, an open loop worth closing today, and a two-year line you're walking down on purpose.
+
+That's the positioning in one line: **not a habit tracker you'll abandon in two weeks — a discipline OS you'll still be running in two years.**
+
+---
+
 ## Live links
 
 | What | URL |
