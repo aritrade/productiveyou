@@ -664,3 +664,5 @@ In Lovable: **Project → Settings → Domains → Connect Domain**. Docs: https
 Copyright © 2026 Aritra De. All rights reserved.
 
 This is a private project. No permission is granted to use, copy, modify, or distribute this software or its assets without the express written consent of the copyright holder.
+
+See the full terms in [**`LICENSE`**](./LICENSE).
