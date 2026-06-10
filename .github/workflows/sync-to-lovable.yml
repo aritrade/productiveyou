@@ -1,0 +1,67 @@
+name: Sync to Lovable repo
+
+# Keeps the Lovable-managed deploy repo (which the live site builds from) in sync
+# with this repo. This repo is the single source of truth: every push to `main`
+# is mirrored into the Lovable repo, which then auto-deploys the live app.
+#
+# Lovable owns its own repo and cannot be pointed back at this one, so this is the
+# supported way to "maintain everything under aritrade/productiveyou".
+#
+# Requires repo secret LOVABLE_SYNC_TOKEN: a token with Contents: read & write on
+# the target repo below.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: sync-to-lovable
+  cancel-in-progress: false
+
+env:
+  TARGET_REPO: aritrade/productiveyou-479a34b8
+  TARGET_BRANCH: main
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source (this repo)
+        uses: actions/checkout@v4
+        with:
+          path: source
+          fetch-depth: 1
+
+      - name: Clone Lovable deploy repo
+        env:
+          TOKEN: ${{ secrets.LOVABLE_SYNC_TOKEN }}
+        run: |
+          git clone --depth 1 --branch "$TARGET_BRANCH" \
+            "https://x-access-token:${TOKEN}@github.com/${TARGET_REPO}.git" target
+
+      - name: Mirror files (preserve Lovable's .env, skip CI config)
+        run: |
+          rsync -a --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            --exclude='.DS_Store' \
+            source/ target/
+
+      - name: Commit & push if changed
+        working-directory: target
+        run: |
+          git config user.name "productiveyou-sync[bot]"
+          git config user.email "productiveyou-sync@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to sync — repos already match."
+          else
+            git commit -m "Sync from ${GITHUB_REPOSITORY}@${GITHUB_SHA::7}"
+            git push origin "HEAD:${TARGET_BRANCH}"
+            echo "Synced source -> ${TARGET_REPO}:${TARGET_BRANCH}"
+          fi
