@@ -68,6 +68,16 @@ Two ways in, both on the **[sign-in page](https://productiveyou.lovable.app/auth
 
 Once inside, a **Demo mode** banner sits at the top of the dashboard; click **Exit demo** there whenever you want to leave and create your own account.
 
+**Go ahead and poke at everything — it's a sandbox, so you can't break anything.** The demo is the fastest way to feel what the product actually does, so explore freely:
+
+- **Tick off** non-negotiables and daily habits and watch today's progress ring fill.
+- **Open the journal** to see multi-modal entries (text, mood, photos) and add your own — nothing is saved.
+- **Scrub the 2-year streak grid** to see consistency over time, and browse **unlocked collectibles**.
+- **Run History → Reports** to generate a Summary or Detailed PDF over any date range.
+- **Hit the Spotify-style Wrapped recap** for the year-in-review moment, in both dark and light themes.
+
+> **Works on every install, not just the website.** Because the [Android APK](#get-the-app--install-on-any-device) and the installable PWA both load the live app, the **demo button is right there on the sign-in screen of the app too** — so you (and anyone you share the APK with) can tour the full product on a phone before ever creating an account.
+
 ---
 
 ## The story — why this exists
@@ -166,6 +176,8 @@ What you get on iOS: full-screen launch, custom icon, splash screen, offline app
 5. The ⚡ Monk Mode icon now lives in your app drawer. Launching it opens the full Lovable web app in a Chrome Custom Tab; you'll see a Chrome version banner the very first time, never again.
 
 The APK is a Trusted Web Activity — basically a thin Android wrapper that loads `https://productiveyou.lovable.app` full-screen, with the same Supabase auth + offline app-shell behaviour as the PWA. Sign-in, journal, photo uploads, everything works identically to the website. Note the URL bar will be hidden once Lovable redeploys the `/.well-known/assetlinks.json` we shipped (see [Trusted Web Activity verification](#trusted-web-activity-verification) below).
+
+> **The no-signup demo is built right into the APK.** Since it loads the live app, the **“Explore the live demo”** button is right there on the app's sign-in screen — so you (or anyone you hand the APK to) can tour the full product on a phone before creating an account. See **[Try the demo](#try-the-demo-no-signup)** for what to explore.
 
 **Option B — install the PWA straight from Chrome (no APK)**
 
